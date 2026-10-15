@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#8ED8F2" />
+<title>Ted và Đội Siêu Khủng Long</title>
+<link rel="icon" href="./icons/logo.svg" type="image/svg+xml" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Ted" />
+<link rel="manifest" href="./manifest.webmanifest" />
+<link rel="apple-touch-icon" href="./icons/icon-180.png" />
+<link rel="stylesheet" href="./fonts/fonts.css" />
+<link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div class="goi-y-xoay-ngang">
+    <div class="goi-y-hinh" id="goi-y-hinh"></div>
+    <p>Xoay ngang màn hình để chơi nhé!</p>
+  </div>
+
+  <!-- Màn mở đầu -->
+  <div id="man-hinh-mo-dau" class="man-hinh man-mo-dau">
+    <div class="tia-sang" aria-hidden="true"></div>
+    <div class="mo-dau-giua">
+      <div class="logo-game" id="logo-game"></div>
+      <h1 class="ten-game"><span class="ten-game-ted">Ted</span><span class="ten-game-phu">và Đội Siêu Khủng Long</span></h1>
+      <button class="nut-chinh nut-co-chu nut-bat-dau" id="nut-bat-dau"><span data-icon="choi"></span><span>Chơi</span></button>
+    </div>
+    <div class="rex-mo-dau" id="rex-mo-dau" aria-hidden="true"></div>
+    <button class="nut-anh" id="nut-anh" aria-label="Đổi ảnh của bé: bố mẹ giữ 2 giây" data-icon="mayAnh"></button>
+    <input type="file" accept="image/*" id="chon-anh" hidden />
+    <div class="bang-anh" id="bang-anh" role="dialog" aria-label="Ảnh của bé" hidden>
+      <p class="bang-anh-chu">Ảnh chỉ lưu trên máy này, không tải lên mạng.</p>
+      <div class="bang-anh-nut">
+        <button class="nut-chinh nut-co-chu nut-nho" id="nut-chon-anh">Chọn ảnh</button>
+        <button class="nut-phu" id="nut-xoa-anh">Dùng hình vẽ</button>
+        <button class="nut-phu" id="nut-dong-anh">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bản đồ -->
+  <div id="man-hinh-ban-do" class="man-hinh an">
+    <header class="thanh-tren">
+      <div class="chip chip-ted">
+        <span class="mat-ted" id="mat-ted"></span>
+        <span class="chip-chu">Ted</span>
+      </div>
+      <div class="chip chip-vung">
+        <button class="nut-vung" id="nut-vung-truoc" aria-label="Vùng trước" data-icon="trai"></button>
+        <span class="chip-chu" id="ten-vung">Vùng 1</span>
+        <span class="hang-da" id="hang-da" role="img"></span>
+        <button class="nut-vung" id="nut-vung-sau" aria-label="Vùng sau" data-icon="phai"></button>
+      </div>
+      <div class="nhom-phai">
+        <button class="nut-tron nut-ruong-ban-do" id="nut-ruong-ban-do" aria-label="Mở rương quà" hidden></button>
+        <div class="chip chip-sao" role="img" id="chip-sao">
+          <span class="sao-icon" id="sao-icon"></span>
+          <span class="chip-chu" id="tong-sao">0</span>
+        </div>
+        <button class="nut-tron nut-mau" id="nut-album" aria-label="Album sticker" data-icon="album"></button>
+        <button class="nut-tron nut-mau" id="nut-tu-do" aria-label="Tủ đồ" data-icon="tuDo"></button>
+        <button class="nut-tron nut-nhac" aria-label="Nhạc nền"></button>
+      </div>
+    </header>
+    <div id="khung-ban-do"></div>
+  </div>
+
+  <!-- Màn chơi -->
+  <div id="man-hinh-choi" class="man-hinh an">
+    <header class="thanh-tren thanh-choi">
+      <button id="nut-ve-ban-do" class="nut-tron" aria-label="Về bản đồ" data-icon="nha"></button>
+      <div class="bong-rex">
+        <span class="mat-rex" id="mat-rex"></span>
+        <p class="loi-rex" id="rex-noi-bong">Xin chào Ted!</p>
+        <button id="nut-loa" class="nut-loa" aria-label="Nghe lại" data-icon="loa"></button>
+      </div>
+      <div class="chip tien-do" id="tien-do" role="img"></div>
+      <button class="nut-tron nut-nhac" aria-label="Nhạc nền"></button>
+    </header>
+    <main id="khung-cau" class="khung-cau"></main>
+  </div>
+
+  <!-- Xong màn -->
+  <div id="man-hinh-ket-qua" class="man-hinh man-ket-qua an">
+    <div class="phao-giay" id="phao-giay" aria-hidden="true"></div>
+    <div class="hop-ket-qua">
+      <div class="ket-qua-sao" id="ket-qua-sao" role="img"></div>
+      <h1 id="ket-qua-tieu-de" class="ket-qua-tieu-de">Giỏi quá, Ted ơi!</h1>
+      <div class="hang-thuong">
+        <div class="the-sticker" role="img" aria-label="Sticker mới">
+          <span class="the-sticker-hinh" id="ket-qua-sticker"></span>
+        </div>
+        <div class="the-ruong" role="img" id="the-ruong">
+          <div class="thanh-ruong"><div class="thanh-ruong-day" id="the-ruong-day"></div></div>
+          <span class="ruong-icon" id="ruong-icon"></span>
+          <span class="ruong-chu" id="the-ruong-chu"></span>
+        </div>
+      </div>
+      <div class="hang-nut">
+        <button id="nut-choi-lai" class="nut-tron nut-to" aria-label="Chơi lại" data-icon="choiLai"></button>
+        <button id="nut-tiep-tuc" class="nut-chinh" aria-label="Đi tiếp" data-icon="choi"></button>
+      </div>
+    </div>
+    <div class="rex-nhay" id="rex-nhay"></div>
+  </div>
+
+  <!-- Rương quà -->
+  <div id="man-hinh-ruong" class="man-hinh man-ruong an">
+    <div class="tia-sang" aria-hidden="true"></div>
+    <h1 class="ruong-tieu-de" id="ruong-tieu-de">Chạm vào rương nào!</h1>
+    <div class="ruong-mon" id="ruong-mon" aria-hidden="true"></div>
+    <button class="hinh-ruong" id="hinh-ruong" aria-label="Mở rương quà">
+      <svg viewBox="0 0 340 310" aria-hidden="true">
+        <ellipse class="ruong-sang" cx="170" cy="150" rx="140" ry="40" fill="#FFD84A" fill-opacity="0.55"/>
+        <g class="nap-ruong">
+          <path d="M30 150 L52 40 Q170 0 288 40 L310 150Z" fill="#E8443A" stroke="#24324A" stroke-width="5" stroke-linejoin="round"/>
+          <path d="M52 40 Q170 0 288 40" stroke="#FFC21A" stroke-width="12" fill="none"/>
+        </g>
+        <ellipse class="long-ruong" cx="170" cy="150" rx="140" ry="26" fill="#5A1E14"/>
+        <rect x="30" y="150" width="280" height="150" rx="18" fill="#C9361F" stroke="#24324A" stroke-width="5"/>
+        <rect x="30" y="176" width="280" height="22" fill="#FFC21A"/>
+        <rect x="146" y="166" width="48" height="58" rx="10" fill="#FFC21A" stroke="#24324A" stroke-width="4"/>
+        <circle cx="170" cy="192" r="7" fill="#24324A"/>
+      </svg>
+    </button>
+    <div class="hang-nut hang-nut-ruong">
+      <button class="nut-chinh nut-co-chu" id="nut-mac-thu"><span data-icon="tuDo"></span><span>Mặc thử</span></button>
+      <button class="nut-tron nut-to" id="nut-ruong-tiep" aria-label="Đi tiếp" data-icon="choi"></button>
+    </div>
+    <div class="rex-nhay" id="rex-ruong"></div>
+  </div>
+
+  <!-- Tủ đồ -->
+  <div id="man-hinh-tu-do" class="man-hinh man-tu-do an">
+    <header class="thanh-tren">
+      <button class="nut-tron" id="nut-tu-do-ve" aria-label="Về bản đồ" data-icon="nha"></button>
+      <h1 class="tieu-de-trang">Tủ đồ của Ted</h1>
+      <div class="tab-nhom" role="tablist" aria-label="Chọn loại đồ">
+        <button class="tab-tu-do" data-tab="ted" role="tab"><span class="tab-hinh tab-hinh-tron" id="tab-ted-mat"></span><span>Ted</span></button>
+        <button class="tab-tu-do" data-tab="xe" role="tab"><span class="tab-hinh" id="tab-xe-hinh"></span><span>Xe</span></button>
+      </div>
+    </header>
+    <div class="than-tu-do">
+      <div class="khung-xem-truoc">
+        <div class="buc" aria-hidden="true"></div>
+        <div class="xem-truoc" id="xem-truoc" role="img" aria-label="Ted đang mặc"></div>
+      </div>
+      <div class="khung-luoi-do">
+        <div class="luoi-do" id="luoi-do"></div>
+        <div class="hang-ruong-tu-do">
+          <div class="the-ruong the-ruong-rong" role="img" id="tu-do-ruong">
+            <span class="ruong-icon" data-ruong></span>
+            <div class="thanh-ruong"><div class="thanh-ruong-day" id="tu-do-ruong-day"></div></div>
+            <span class="ruong-chu" id="tu-do-ruong-chu"></span>
+          </div>
+          <button class="nut-chinh nut-co-chu nut-nho" id="nut-tu-do-ruong" hidden>Mở rương</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Đá Năng Lượng -->
+  <div id="man-hinh-da" class="man-hinh man-da an">
+    <div class="khung-da" id="khung-da" aria-hidden="true"></div>
+    <div class="phao-giay" id="phao-giay-da" aria-hidden="true"></div>
+    <div class="da-tren">
+      <h1 class="da-tieu-de" id="da-tieu-de">Vùng 1 sáng đèn rồi!</h1>
+      <div class="chip da-hang" id="da-hang" role="img"></div>
+    </div>
+    <div class="da-lon" aria-hidden="true">
+      <svg viewBox="-120 -130 240 260">
+        <circle r="118" fill="#B9A9FF" fill-opacity="0.18"/>
+        <circle r="88" fill="#B9A9FF" fill-opacity="0.25"/>
+        <path d="M0 -84 L66 -36 L40 84 L-40 84 L-66 -36Z" fill="#9B86FF" stroke="#FFFFFF" stroke-width="7" stroke-linejoin="round"/>
+        <path d="M-66 -36 L66 -36 M0 -84 L-26 -36 L0 84 L26 -36Z" stroke="#FFFFFF" stroke-opacity="0.7" stroke-width="4" fill="none" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <button class="nut-chinh nut-co-chu nut-da" id="nut-da-tiep"><span id="da-nut-chu">Đến Vùng 2</span><span data-icon="muiTen"></span></button>
+  </div>
+
+  <!-- Album sticker -->
+  <div id="man-hinh-album" class="man-hinh man-album an">
+    <header class="thanh-tren">
+      <button class="nut-tron" id="nut-album-ve" aria-label="Về bản đồ" data-icon="nha"></button>
+      <h1 class="tieu-de-trang">Album của Ted</h1>
+      <div class="tab-nhom" role="tablist" aria-label="Chọn vùng" id="tab-album"></div>
+    </header>
+    <div class="cuon-album">
+      <div class="trang-trai">
+        <h2 class="album-ten-vung" id="album-ten-vung">Vùng 1</h2>
+        <div class="album-o" id="album-o"></div>
+      </div>
+      <div class="trang-phai">
+        <div class="album-canh" id="album-canh"></div>
+        <div class="album-canh-sticker" id="album-canh-sticker"></div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./core/app.js"></script>
+</body>
+</html>
