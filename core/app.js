@@ -239,13 +239,13 @@ function batDauCau() {
   nutLoa.classList.remove('nhac-loa');
   void nutLoa.offsetWidth;
   nutLoa.classList.add('nhac-loa');
-  controllerHienTai = MODULES[cauData.kieu](khungCau, cauData, { onDung: xuLyDung, onSai: xuLySai });
+  controllerHienTai = MODULES[cauData.kieu](khungCau, cauData, { onDung: xuLyDung, onSai: xuLySai, noi: rexNoi });
 }
 
-function xuLyDung() {
+function xuLyDung(loiKhen) {
   phatDung();
   rexVui();
-  rexNoi(LOI_KHEN[Math.floor(Math.random() * LOI_KHEN.length)]);
+  rexNoi(typeof loiKhen === 'string' ? loiKhen : LOI_KHEN[Math.floor(Math.random() * LOI_KHEN.length)]);
   cauIndex++;
   veTienDo();
   henGio = setTimeout(batDauCau, 1500);
@@ -560,6 +560,12 @@ $('nut-dong-anh').addEventListener('click', () => {
 
 // ---------- Chơi offline ----------
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  // Có bản mới thì máy tự cài ngầm; nếu đang ở màn mở đầu thì tải lại ngay để dùng bản mới,
+  // còn đang chơi thì để lần mở sau, không làm gián đoạn bé.
+  const daCoBanCu = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (daCoBanCu && !manHinh['mo-dau'].classList.contains('an')) location.reload();
+  });
   navigator.serviceWorker.register('./sw.js').catch(() => {});
 }
 

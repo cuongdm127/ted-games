@@ -91,3 +91,29 @@ export const CANH_THANH_PHO = `
     <div class="nha nha-4"></div><div class="nha nha-5"></div><div class="nha nha-6"></div>
     <div class="via-he"></div>
   </div>`;
+
+/**
+ * Dấu so sánh vẽ thành miệng khủng long: miệng luôn há về phía số lớn hơn.
+ * dau: '<' | '>' | '=' | '?'
+ */
+export function dauSoSanh(dau) {
+  const XANH = '#4CB050';
+  if (dau === '=') {
+    return `<svg viewBox="0 0 100 100" aria-hidden="true">
+      <rect x="16" y="28" width="68" height="16" rx="8" fill="${XANH}" stroke="${INK}" stroke-width="4"/>
+      <rect x="16" y="56" width="68" height="16" rx="8" fill="${XANH}" stroke="${INK}" stroke-width="4"/>
+    </svg>`;
+  }
+  if (dau === '?') {
+    return `<svg viewBox="0 0 100 100" aria-hidden="true">
+      <text x="50" y="72" text-anchor="middle" font-family="Baloo 2, Nunito, sans-serif" font-weight="800" font-size="70" fill="#FFFFFF">?</text>
+    </svg>`;
+  }
+  // Vẽ dấu '<' (miệng há sang phải); dấu '>' lật ngang.
+  const lat = dau === '>' ? ' transform="translate(100 0) scale(-1 1)"' : '';
+  return `<svg viewBox="0 0 100 100" aria-hidden="true"><g${lat}>
+    <path d="M86 10 L14 46 Q8 50 14 54 L86 90 L92 76 L36 50 L92 24Z" fill="${XANH}" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M44 41 L50 32 L54 38 L62 26 L64 33 L74 22 L75 29 M44 59 L50 68 L54 62 L62 74 L64 67 L74 78 L75 71" fill="#FFFFFF" stroke="${INK}" stroke-width="2" stroke-linejoin="round"/>
+    <circle cx="30" cy="38" r="6" fill="#FFFFFF" stroke="${INK}" stroke-width="2.5"/><circle cx="31" cy="38" r="2.8" fill="${INK}"/>
+  </g></svg>`;
+}

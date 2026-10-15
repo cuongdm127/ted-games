@@ -8,7 +8,7 @@
 // Kiểu 'timso' (chạm trứng):
 //   soDung    số đúng; soLuaChon: các trứng hiện ra
 //   phepTinh  (tuỳ chọn) phép tính hiện trên bảng, ví dụ '12 + 5'
-// Kiểu 'sosanh' (Vùng 2): trai, phai: số trên hai bãi xe; chon: 'lon' (nhiều hơn) hoặc 'nho' (ít hơn)
+// Kiểu 'sosanh' (Vùng 2): trai, phai: số trên hai bãi xe; chon: 'lon' (nhiều hơn), 'nho' (ít hơn) hoặc 'dau' (chọn dấu <, =, >)
 // Kiểu 'chohang' (Vùng 2): xe: các số, mỗi xe chở thùng chục và thùng lẻ, bé kéo về kho đúng số
 // Kiểu 'xepxe' (Vùng 2): so: các số trên xe đua, bé xếp từ nhỏ đến lớn
 // hoi: chữ trong bong bóng của Rex; doc (tuỳ chọn): câu Rex đọc thành tiếng.
@@ -32,6 +32,13 @@ const cong = (a, b, soLuaChon) => ({
 const soSanh = (trai, phai, chon = 'lon') => ({
   kieu: 'sosanh', trai, phai, chon,
   hoi: `Bãi nào có ${chon === 'lon' ? 'nhiều' : 'ít'} xe hơn: ${trai} hay ${phai}?`,
+});
+
+// Chọn dấu <, =, > đặt giữa hai bãi xe.
+const chonDau = (trai, phai) => ({
+  kieu: 'sosanh', trai, phai, chon: 'dau',
+  hoi: `Chọn dấu đúng: ${trai} ? ${phai}`,
+  doc: `${trai} với ${phai}. Ted chọn dấu nào nhỉ?`,
 });
 
 const choHang = (...xe) => ({
@@ -100,9 +107,9 @@ export const LEVELS = {
     },
     {
       man: 2,
-      tieuDe: 'Nhiều hay ít',
-      cauChuyen: '',
-      cau: [soSanh(83, 38, 'nho'), soSanh(29, 92, 'nho'), soSanh(66, 64), soSanh(70, 17, 'nho')],
+      tieuDe: 'Miệng khủng long',
+      cauChuyen: 'Dấu so sánh giống miệng khủng long: miệng luôn há về phía số lớn hơn!',
+      cau: [soSanh(83, 38, 'nho'), chonDau(25, 52), chonDau(70, 17), soSanh(29, 92, 'nho'), chonDau(44, 44), chonDau(66, 64)],
     },
     {
       man: 3,
@@ -120,19 +127,19 @@ export const LEVELS = {
       man: 5,
       tieuDe: 'Ngã tư đông vui',
       cauChuyen: '',
-      cau: [soSanh(67, 76, 'nho'), choHang(62, 26, 60), xepXe(19, 91, 29, 92)],
+      cau: [chonDau(67, 76), choHang(62, 26, 60), xepXe(19, 91, 29, 92), chonDau(81, 18)],
     },
     {
       man: 6,
       tieuDe: 'Tiến sĩ Lộn Xộn chặn đường',
       cauChuyen: 'Các số giống nhau quá, Ted nhìn thật kỹ nhé!',
-      cau: [soSanh(88, 89), choHang(70, 7, 17), xepXe(33, 38, 83, 30, 80), soSanh(56, 65, 'nho')],
+      cau: [chonDau(88, 89), choHang(70, 7, 17), xepXe(33, 38, 83, 30, 80), soSanh(56, 65, 'nho'), chonDau(50, 50)],
     },
     {
       man: 7,
       tieuDe: 'Cứu Khủng long ba sừng',
       cauChuyen: 'Khủng long ba sừng bị kẹt giữa đường đua! Ted dọn đường để tìm Đá Năng Lượng nào!',
-      cau: [choHang(47, 74, 40), xepXe(15, 51, 55, 50, 5), soSanh(99, 90), choHang(38, 83, 33)],
+      cau: [choHang(47, 74, 40), chonDau(99, 90), xepXe(15, 51, 55, 50, 5), chonDau(39, 93), choHang(38, 83, 33)],
     },
   ],
 };

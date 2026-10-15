@@ -1175,25 +1175,56 @@ svg { display: block; }
 .dau-so-sanh {
   flex: none;
   align-self: center;
-  width: clamp(64px, 16vh, 120px);
-  height: clamp(64px, 16vh, 120px);
+  width: clamp(72px, 18vh, 136px);
+  height: clamp(72px, 18vh, 136px);
   border-radius: 50%;
   background: var(--cam);
-  color: #fff;
   border: 6px solid #fff;
+  box-shadow: 0 6px 0 rgba(36, 50, 74, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--chu-to);
-  font-weight: 800;
-  font-size: clamp(40px, 11vh, 84px);
-  line-height: 1;
-  transform: scale(0);
-  transition: transform 0.4s cubic-bezier(.2, 1.6, .5, 1);
   margin: 0 -3%;
   z-index: 2;
 }
-.dau-so-sanh.hien { transform: scale(1); }
+.dau-so-sanh svg { width: 78%; height: 78%; }
+.dau-so-sanh.hien { background: #fff; border-color: var(--xanh); animation: bat-dau 0.5s cubic-bezier(.2, 1.6, .5, 1); }
+@keyframes bat-dau { from { transform: scale(0.3) rotate(-20deg); } to { transform: scale(1); } }
+
+/* Chọn dấu < = > */
+.man-sosanh.chon-dau .hai-bai { bottom: 31%; top: 27%; }
+.man-sosanh.chon-dau .bien-so { font-size: clamp(44px, 11vh, 96px); }
+.man-sosanh.chon-dau .xe-do { width: 22%; }
+.hang-dau {
+  position: absolute;
+  left: 50%;
+  bottom: 4%;
+  height: 24%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: clamp(12px, 3vw, 32px);
+}
+.nut-dau {
+  height: 100%;
+  aspect-ratio: 1 / 1.08;
+  border-radius: 28px;
+  border: 6px solid #fff;
+  background: #FFF7E0;
+  box-shadow: 0 7px 0 rgba(36, 50, 74, 0.28);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4% 4% 2%;
+  transition: transform 0.12s;
+}
+.nut-dau:active { transform: translateY(4px) scale(0.97); box-shadow: 0 3px 0 rgba(36, 50, 74, 0.28); }
+.nut-dau-hinh { flex: 1; width: 80%; min-height: 0; display: flex; }
+.nut-dau-hinh svg { width: 100%; height: 100%; }
+.nut-dau-chu { font-family: var(--chu-to); font-weight: 800; font-size: clamp(14px, 2.6vh, 22px); color: var(--muc); line-height: 1.2; }
+.nut-dau.sai { animation: lac 0.45s ease-in-out; }
+.nut-dau.dung { border-color: var(--xanh); background: #E6F7E6; animation: nay-to 0.5s ease-out; }
+.nut-dau.goi-y { animation: sang-khung 1s ease-in-out infinite; }
 
 /* Chở hàng đúng kho */
 .khay-xe {
@@ -1483,3 +1514,16 @@ svg { display: block; }
 }
 .thanh-thu-chu { font-weight: 800; color: var(--vang); }
 .thanh-thu button { height: 34px; padding: 0 12px; border-radius: 17px; background: #fff; color: var(--muc); font-weight: 800; font-size: 14px; }
+
+/* Chọn dấu trên điện thoại ngang: bỏ hàng xe, nút dấu to, không chữ */
+@media (max-height: 520px) {
+  .man-sosanh.chon-dau .hai-bai { top: 6%; bottom: 40%; }
+  .man-sosanh.chon-dau .hang-xe, .man-sosanh.chon-dau .vach-do { display: none; }
+  .man-sosanh.chon-dau .bai-xe { justify-content: center; padding: 2%; border-width: 6px; border-radius: 24px; }
+  .man-sosanh.chon-dau .bien-so { font-size: clamp(40px, 14vh, 72px); border-width: 4px; border-radius: 18px; }
+  .man-sosanh.chon-dau .dau-so-sanh { width: 21vh; height: 21vh; border-width: 4px; }
+  .hang-dau { height: 33%; bottom: 3%; }
+  .nut-dau { aspect-ratio: 1.25 / 1; border-radius: 20px; border-width: 4px; }
+  .nut-dau-hinh { width: 70%; }
+  .nut-dau-chu { display: none; }
+}

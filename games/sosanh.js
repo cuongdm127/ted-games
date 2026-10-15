@@ -1,62 +1,108 @@
-// Vùng 2 · Số nào lớn hơn: hai bãi xe có biển số, bé chạm bãi có nhiều (hoặc ít) xe hơn.
-// Dữ liệu: { kieu: 'sosanh', trai: 38, phai: 52, hoi: ..., chon: 'lon' | 'nho' }
-import { oTo, MAU_XE, CANH_THANH_PHO } from '../core/art-vung2.js';
+// Vùng 2 · So sánh hai bãi xe.
+// Dữ liệu: { kieu: 'sosanh', trai: 38, phai: 52, chon: 'lon' | 'nho' | 'dau' }
+//   'lon' / 'nho': bé chạm bãi có nhiều (ít) xe hơn, đúng thì dấu hiện ra ở giữa.
+//   'dau': bé chọn dấu <, =, > đặt vào giữa hai bãi.
+// Dấu vẽ thành miệng khủng long, luôn há về phía số lớn hơn.
+import { oTo, MAU_XE, CANH_THANH_PHO, dauSoSanh } from '../core/art-vung2.js';
+
+const TEN_DAU = { '<': 'bé hơn', '>': 'lớn hơn', '=': 'bằng' };
+
+export function cauDoc(trai, phai) {
+  const dau = trai > phai ? '>' : trai < phai ? '<' : '=';
+  return `${trai} ${TEN_DAU[dau]} ${phai}`;
+}
 
 export function taoCau(container, cauData, hooks) {
   const { trai, phai, chon = 'lon' } = cauData;
-  const dung = chon === 'lon' ? Math.max(trai, phai) : Math.min(trai, phai);
+  const chonDau = chon === 'dau';
   const dau = trai > phai ? '>' : trai < phai ? '<' : '=';
+  const dung = chon === 'lon' ? Math.max(trai, phai) : Math.min(trai, phai);
+  const khen = `Đúng rồi! ${cauDoc(trai, phai)}.`;
 
+  const the = chonDau ? 'div' : 'button';
   const bai = (so, ben) => `
-    <button class="bai-xe" data-so="${so}" aria-label="Bãi có ${so} xe">
+    <${the} class="bai-xe" data-so="${so}" ${chonDau ? 'role="img"' : ''} aria-label="Bãi có ${so} xe">
       <span class="hang-xe">${[0, 1, 2].map((i) => `<span class="xe-do">${oTo(MAU_XE[(i + (ben === 'trai' ? 0 : 3)) % MAU_XE.length])}</span>`).join('')}</span>
       <span class="vach-do" aria-hidden="true"></span>
       <span class="bien-so">${so}</span>
-    </button>`;
+    </${the}>`;
 
   container.innerHTML = `
-    <div class="man-sosanh">
+    <div class="man-sosanh${chonDau ? ' chon-dau' : ''}">
       ${CANH_THANH_PHO}
       <div class="hai-bai">
         ${bai(trai, 'trai')}
-        <div class="dau-so-sanh" id="dau-so-sanh" aria-hidden="true">${dau}</div>
+        <div class="dau-so-sanh" id="dau-so-sanh" aria-hidden="true">${dauSoSanh('?')}</div>
         ${bai(phai, 'phai')}
       </div>
+      ${chonDau ? `<div class="hang-dau">${['<', '=', '>'].map((d) => `
+        <button class="nut-dau" data-dau="${d}" aria-label="${TEN_DAU[d]}">
+          <span class="nut-dau-hinh">${dauSoSanh(d)}</span><span class="nut-dau-chu">${TEN_DAU[d]}</span>
+        </button>`).join('')}</div>` : ''}
     </div>`;
 
   let xongRoi = false;
+  const oDau = container.querySelector('#dau-so-sanh');
   const cacBai = [...container.querySelectorAll('.bai-xe')];
-  const baiDung = cacBai.find((b) => Number(b.dataset.so) === dung);
-  const dauSoSanh = container.querySelector('#dau-so-sanh');
+  const cacNutDau = [...container.querySelectorAll('.nut-dau')];
+  const baiDung = chonDau ? null : cacBai.find((b) => Number(b.dataset.so) === dung);
+  const nutDung = cacNutDau.find((b) => b.dataset.dau === dau);
 
-  cacBai.forEach((b) => {
-    b.addEventListener('click', () => {
+  function hienDau() {
+    oDau.innerHTML = dauSoSanh(dau);
+    oDau.classList.remove('hien');
+    void oDau.offsetWidth;
+    oDau.classList.add('hien');
+  }
+
+  function lac(el) {
+    el.classList.remove('sai');
+    void el.offsetWidth;
+    el.classList.add('sai');
+  }
+
+  if (chonDau) {
+    cacNutDau.forEach((b) => b.addEventListener('click', () => {
+      if (xongRoi) return;
+      if (b === nutDung) {
+        xongRoi = true;
+        b.classList.add('dung');
+        hienDau();
+        hooks.onDung(khen);
+      } else {
+        lac(b);
+        hooks.onSai('Miệng khủng long luôn há về phía số lớn hơn đó!');
+      }
+    }));
+  } else {
+    cacBai.forEach((b) => b.addEventListener('click', () => {
       if (xongRoi) return;
       if (b === baiDung) {
         xongRoi = true;
         b.classList.add('dung');
-        dauSoSanh.classList.add('hien');
-        hooks.onDung();
+        hienDau();
+        hooks.onDung(khen);
       } else {
-        b.classList.remove('sai');
-        void b.offsetWidth;
-        b.classList.add('sai');
+        lac(b);
         hooks.onSai();
       }
-    });
-  });
+    }));
+  }
 
   return {
     goiYDapAn() {
-      baiDung.classList.add('goi-y');
+      (chonDau ? nutDung : baiDung).classList.add('goi-y');
     },
     lamMau(xong) {
-      dauSoSanh.classList.add('hien');
-      baiDung.classList.add('goi-y');
+      hienDau();
+      (chonDau ? nutDung : baiDung).classList.add('goi-y');
+      setTimeout(() => hooks.noi && hooks.noi(cauDoc(trai, phai)), 1400);
       setTimeout(() => {
-        dauSoSanh.classList.remove('hien');
+        oDau.innerHTML = dauSoSanh('?');
+        oDau.classList.remove('hien');
+        (chonDau ? nutDung : baiDung).classList.remove('goi-y');
         xong();
-      }, 2200);
+      }, 2600);
     },
   };
 }

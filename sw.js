@@ -1,6 +1,7 @@
-// Service worker: lưu toàn bộ game vào máy để chơi được khi không có mạng.
-// Khi có mạng game luôn lấy bản mới nhất. Tăng số phiên bản khi thêm/bớt file để bản lưu offline được làm mới.
-const PHIEN_BAN = 'ted-v6';
+// Service worker: lưu toàn bộ game vào máy để mở nhanh và chơi được khi không có mạng.
+// QUAN TRỌNG: mỗi lần sửa bất kỳ file nào của game phải tăng PHIEN_BAN,
+// máy của bé mới tải bản mới (các file khác lấy thẳng từ bộ nhớ máy cho nhanh).
+const PHIEN_BAN = 'ted-v7';
 
 const FILE_GAME = [
   './',
@@ -67,23 +68,33 @@ self.addEventListener('activate', (e) => {
   );
 });
 
-// Có mạng: lấy bản mới nhất từ máy chủ rồi cập nhật bộ nhớ máy.
-// Mất mạng (hoặc mạng quá chậm): dùng bản đã lưu, nên vẫn chơi được offline.
+// Trang chính (index.html): thử lấy bản mới từ mạng, chậm quá 2,5 giây thì dùng bản đã lưu.
+// Các file còn lại (js, css, font, ảnh): lấy ngay từ bộ nhớ máy, không chờ mạng.
+// Khi có bản mới, sw.js đổi PHIEN_BAN nên trình duyệt cài lại toàn bộ file.
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
-  const cungTrang = new URL(e.request.url).origin === self.location.origin;
-  if (!cungTrang) return;
+  const url = new URL(e.request.url);
+  if (url.origin !== self.location.origin) return;
+  const laTrang = e.request.mode === 'navigate';
+
   e.respondWith((async () => {
     const cache = await caches.open(PHIEN_BAN);
+    if (!laTrang) {
+      const daLuu = await cache.match(e.request, { ignoreSearch: true });
+      if (daLuu) return daLuu;
+      const res = await fetch(e.request);
+      if (res.ok) cache.put(e.request, res.clone());
+      return res;
+    }
     try {
       const res = await Promise.race([
         fetch(e.request, { cache: 'no-cache' }),
-        new Promise((_, loi) => setTimeout(() => loi(new Error('cham')), 4000)),
+        new Promise((_, loi) => setTimeout(() => loi(new Error('cham')), 2500)),
       ]);
-      if (res.ok) cache.put(e.request, res.clone());
+      if (res.ok) cache.put('./index.html', res.clone());
       return res;
     } catch (err) {
-      const daLuu = await cache.match(e.request, { ignoreSearch: true });
+      const daLuu = (await cache.match('./index.html')) || (await cache.match('./'));
       if (daLuu) return daLuu;
       throw err;
     }
