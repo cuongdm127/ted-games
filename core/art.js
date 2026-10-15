@@ -267,6 +267,7 @@ const ICON = {
   trai: '<path d="M15 5l-7 7 7 7"/>',
   phai: '<path d="M9 5l7 7-7 7"/>',
   muiTen: '<path d="M5 12h14"/><path d="M13 6l6 6-6 6"/>',
+  hoanTac: '<path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>',
   mayAnh: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
   khoa: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
 };

@@ -1,6 +1,6 @@
 // Service worker: lưu toàn bộ game vào máy để chơi được khi không có mạng.
 // MỖI LẦN PHÁT HÀNH BẢN MỚI: tăng số phiên bản dưới đây (ted-v2, ted-v3...), nếu không iPad vẫn chạy bản cũ.
-const PHIEN_BAN = 'ted-v3';
+const PHIEN_BAN = 'ted-v4';
 
 const FILE_GAME = [
   './',

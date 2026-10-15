@@ -1440,3 +1440,27 @@ svg { display: block; }
 .nut-loa.nhac-loa { animation: nhac-loa 0.6s ease-in-out 1.2s 3; }
 .nut-loa.dang-doc { animation: nay-to 0.4s ease-out; }
 @keyframes nhac-loa { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.18); box-shadow: 0 4px 0 var(--cam-dam), 0 0 0 10px rgba(255, 122, 48, 0.25); } }
+
+/* Đếm và cho ăn: món đã ăn, nút nhả lại */
+.vat-pham-keo.da-an { display: none; }
+.vat-pham-keo.nha-ra { animation: nha-ra 0.45s cubic-bezier(.2, 1.6, .5, 1); }
+.vat-pham-keo.nhap-nhay { animation: phat-sang-tron 0.5s ease-in-out 3; }
+.nut-nha {
+  flex: none;
+  width: calc(var(--nut-to) * 0.72);
+  height: calc(var(--nut-to) * 0.72);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--muc);
+  box-shadow: 0 5px 0 rgba(36, 50, 74, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.nut-nha svg { width: 55%; height: 55%; }
+.nut-nha:disabled { opacity: 0.35; box-shadow: none; }
+.nut-nha:not(:disabled):active { transform: translateY(4px); box-shadow: none; }
+.nut-nha.nhap-nhay { animation: phat-sang-tron 0.5s ease-in-out 3; }
+.hang-duoi { gap: 12px; }
+@keyframes nha-ra { from { transform: scale(0.2) translateX(120%); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes phat-sang-tron { 0%, 100% { box-shadow: 0 0 0 0 rgba(255, 194, 26, 0.9); } 50% { box-shadow: 0 0 0 16px rgba(255, 194, 26, 0); } }

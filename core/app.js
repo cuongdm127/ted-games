@@ -251,12 +251,12 @@ function xuLyDung() {
   henGio = setTimeout(batDauCau, 1500);
 }
 
-function xuLySai() {
+function xuLySai(loiNhac) {
   soLanSaiCau++;
   tongSoLanSaiMan++;
   phatSai();
   if (soLanSaiCau === 1) {
-    rexNoi('Thử lại nhé, Ted ơi!');
+    rexNoi(loiNhac || 'Thử lại nhé, Ted ơi!');
     hienLaiDeSau(2500);
   } else if (soLanSaiCau === 2) {
     rexNoi('Nhìn kỹ gợi ý nhé!');
