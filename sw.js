@@ -1,6 +1,6 @@
 // Service worker: lưu toàn bộ game vào máy để chơi được khi không có mạng.
 // MỖI LẦN PHÁT HÀNH BẢN MỚI: tăng số phiên bản dưới đây (ted-v2, ted-v3...), nếu không iPad vẫn chạy bản cũ.
-const PHIEN_BAN = 'ted-v1';
+const PHIEN_BAN = 'ted-v2';
 
 const FILE_GAME = [
   './',
@@ -44,6 +44,7 @@ const FILE_GAME = [
   './icons/icon-512.png',
   './icons/icon-maskable-512.png',
   './icons/logo.svg',
+  './icons/ted.jpg',
   './index.html',
   './manifest.webmanifest',
   './style.css',

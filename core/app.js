@@ -6,7 +6,7 @@ import { tinhSao } from './rewards.js';
 import { noi, noiLai } from './speech.js';
 import { khoiTaoAm, phatDung, phatSai } from './audio.js';
 import { khoiDongNhac, chonBai, batTatNhac, nhacDangBat } from './music.js';
-import { rex, rexMat, tedMat, tedToanThan, xeTed, hinhDo, sao, daNangLuong, ruong, icon, logoTed } from './art.js';
+import { rex, rexMat, tedMat, tedToanThan, xeTed, hinhDo, sao, daNangLuong, ruong, icon } from './art.js';
 import { docAnh, luuAnhTuFile, xoaAnh } from './anh.js';
 import { DO, O_DO, SAO_MOT_RUONG, doTiepTheo, soRuongCho } from './items.js';
 import { sticker } from './stickers.js';
@@ -123,7 +123,7 @@ function veBanDo() {
     },
   });
 
-  $('mat-ted').innerHTML = docAnh() ? `<img src="${docAnh()}" alt="">` : tedMat(data.doMac);
+  $('mat-ted').innerHTML = `<img src="${anhCuaBe()}" alt="">`;
   $('ten-vung').textContent = `Vùng ${vungDangXem} · ${tenVung(vungDangXem)}`;
   const tong = storage.tongSao(data);
   $('tong-sao').textContent = String(tong);
@@ -464,12 +464,15 @@ $('nut-album').addEventListener('click', () => {
 $('nut-album-ve').addEventListener('click', veBanDo);
 
 // ---------- Màn mở đầu và ảnh của bé ----------
+// Ảnh mặc định nằm trong game (icons/ted.jpg); bố mẹ có thể thay bằng ảnh khác, lưu riêng trên máy.
+const ANH_MAC_DINH = './icons/ted.jpg';
+function anhCuaBe() {
+  return docAnh() || ANH_MAC_DINH;
+}
+
 function veLogo() {
-  const anh = docAnh();
-  $('logo-game').innerHTML = anh
-    ? `<div class="logo-anh"><img src="${anh}" alt="Ted"></div>`
-    : logoTed();
-  $('nut-xoa-anh').hidden = !anh;
+  $('logo-game').innerHTML = `<div class="logo-anh"><img src="${anhCuaBe()}" alt="Ted"></div>`;
+  $('nut-xoa-anh').hidden = !docAnh();
 }
 $('rex-mo-dau').innerHTML = rex({ cuoiTo: true, nhay: true });
 $('nut-bat-dau').addEventListener('click', () => {
