@@ -1464,3 +1464,22 @@ svg { display: block; }
 .hang-duoi { gap: 12px; }
 @keyframes nha-ra { from { transform: scale(0.2) translateX(120%); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 @keyframes phat-sang-tron { 0%, 100% { box-shadow: 0 0 0 0 rgba(255, 194, 26, 0.9); } 50% { box-shadow: 0 0 0 16px rgba(255, 194, 26, 0); } }
+
+/* Chế độ thử (chỉ hiện khi mở link có ?test) */
+.thanh-thu {
+  position: fixed;
+  left: 50%;
+  bottom: max(6px, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px 6px 14px;
+  border-radius: 999px;
+  background: rgba(36, 50, 74, 0.85);
+  color: #fff;
+  font-size: 14px;
+}
+.thanh-thu-chu { font-weight: 800; color: var(--vang); }
+.thanh-thu button { height: 34px; padding: 0 12px; border-radius: 17px; background: #fff; color: var(--muc); font-weight: 800; font-size: 14px; }

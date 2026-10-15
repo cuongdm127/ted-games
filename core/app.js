@@ -1,7 +1,7 @@
 // Điều khiển toàn bộ game: chuyển màn hình, chơi màn, phần thưởng.
 import { LEVELS } from '../data/levels.js';
 import { renderBanDo, tenVung } from './map.js';
-import { storage } from './storage.js';
+import { storage, CHE_DO_THU } from './storage.js';
 import { tinhSao } from './rewards.js';
 import { noi } from './speech.js';
 import { khoiTaoAm, phatDung, phatSai } from './audio.js';
@@ -561,6 +561,27 @@ $('nut-dong-anh').addEventListener('click', () => {
 // ---------- Chơi offline ----------
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
   navigator.serviceWorker.register('./sw.js').catch(() => {});
+}
+
+// ---------- Chế độ thử (?test) ----------
+if (CHE_DO_THU) {
+  const thanh = document.createElement('div');
+  thanh.className = 'thanh-thu';
+  thanh.innerHTML = `
+    <span class="thanh-thu-chu">Chế độ thử</span>
+    <button type="button" data-viec="sao">+10 sao</button>
+    <button type="button" data-viec="xoa">Xoá tiến độ thử</button>`;
+  document.body.appendChild(thanh);
+  thanh.querySelector('[data-viec="sao"]').addEventListener('click', () => {
+    storage.themSaoThu(10);
+    if (!manHinh['ban-do'].classList.contains('an')) veBanDo();
+    else if (!manHinh['tu-do'].classList.contains('an')) veTuDo();
+  });
+  thanh.querySelector('[data-viec="xoa"]').addEventListener('click', () => {
+    storage.xoaTienDoThu();
+    vungDangXem = 1;
+    veBanDo();
+  });
 }
 
 // ---------- Bắt đầu ----------

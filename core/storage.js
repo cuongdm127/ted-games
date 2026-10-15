@@ -11,7 +11,17 @@
 
 import { DO_MAC_DINH, DO_CO_SAN } from './items.js';
 
-const KEY = 'ted-game-save';
+// Chế độ thử cho bố mẹ: mở link với ?test ở cuối. Mọi vùng, mọi màn đều mở;
+// tiến độ lưu riêng nên không ảnh hưởng tiến độ thật của bé.
+export const CHE_DO_THU = (() => {
+  try {
+    return new URLSearchParams(location.search).has('test');
+  } catch (e) {
+    return false;
+  }
+})();
+
+const KEY = CHE_DO_THU ? 'ted-game-save-test' : 'ted-game-save';
 
 function chuanHoa(data) {
   if (!data || typeof data !== 'object') data = {};
@@ -64,11 +74,12 @@ function luuMan(vung, man, sao) {
 
 /** Vùng mở khi vùng trước đã xong màn cuối. soManMoiVung: số màn của vùng trước. */
 function vungDaMo(vung, data = docTienDo(), soManVungTruoc = 7) {
-  if (vung <= 1) return true;
+  if (vung <= 1 || CHE_DO_THU) return true;
   return saoCuaMan(vung - 1, soManVungTruoc, data) > 0;
 }
 
 function manDaMo(vung, man, data = docTienDo(), soManVungTruoc = 7) {
+  if (CHE_DO_THU) return true;
   if (man === 1) return vungDaMo(vung, data, soManVungTruoc);
   return saoCuaMan(vung, man - 1, data) > 0;
 }
@@ -80,7 +91,7 @@ function tongSao(data = docTienDo()) {
     if (!/^vung\d+$/.test(k)) continue;
     for (const m of Object.values(v)) tong += m.saoCaoNhat || 0;
   }
-  return tong;
+  return tong + (data.saoThu || 0);
 }
 
 function moRuong(idDo) {
@@ -102,6 +113,23 @@ function danhDauDaXem(vung) {
   });
 }
 
+// Chỉ dùng trong chế độ thử: cộng sao để thử rương quà, và xoá tiến độ thử.
+function themSaoThu(n) {
+  if (!CHE_DO_THU) return docTienDo();
+  return capNhat((data) => {
+    data.saoThu = (data.saoThu || 0) + n;
+  });
+}
+
+function xoaTienDoThu() {
+  if (!CHE_DO_THU) return;
+  try {
+    localStorage.removeItem(KEY);
+  } catch (e) {
+    // bỏ qua
+  }
+}
+
 export const storage = {
-  docTienDo, luuMan, saoCuaMan, manDaMo, vungDaMo, tongSao, moRuong, mac, danhDauDaXem,
+  docTienDo, luuMan, saoCuaMan, manDaMo, vungDaMo, tongSao, moRuong, mac, danhDauDaXem, themSaoThu, xoaTienDoThu,
 };

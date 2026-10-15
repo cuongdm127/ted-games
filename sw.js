@@ -1,6 +1,6 @@
 // Service worker: lưu toàn bộ game vào máy để chơi được khi không có mạng.
-// MỖI LẦN PHÁT HÀNH BẢN MỚI: tăng số phiên bản dưới đây (ted-v2, ted-v3...), nếu không iPad vẫn chạy bản cũ.
-const PHIEN_BAN = 'ted-v4';
+// Khi có mạng game luôn lấy bản mới nhất. Tăng số phiên bản khi thêm/bớt file để bản lưu offline được làm mới.
+const PHIEN_BAN = 'ted-v5';
 
 const FILE_GAME = [
   './',
@@ -51,7 +51,12 @@ const FILE_GAME = [
 ];
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(PHIEN_BAN).then((c) => c.addAll(FILE_GAME)).then(() => self.skipWaiting()));
+  // cache: 'reload' để luôn tải bản mới từ máy chủ, không lấy bản cũ trong bộ nhớ đệm của trình duyệt.
+  e.waitUntil(
+    caches.open(PHIEN_BAN)
+      .then((c) => c.addAll(FILE_GAME.map((u) => new Request(u, { cache: 'reload' }))))
+      .then(() => self.skipWaiting()),
+  );
 });
 
 self.addEventListener('activate', (e) => {
@@ -62,16 +67,25 @@ self.addEventListener('activate', (e) => {
   );
 });
 
-// Lấy từ bộ nhớ máy trước; không có thì tải mạng rồi lưu lại.
+// Có mạng: lấy bản mới nhất từ máy chủ rồi cập nhật bộ nhớ máy.
+// Mất mạng (hoặc mạng quá chậm): dùng bản đã lưu, nên vẫn chơi được offline.
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
-  e.respondWith(
-    caches.match(e.request, { ignoreSearch: true }).then((daLuu) => daLuu || fetch(e.request).then((res) => {
-      if (res.ok && new URL(e.request.url).origin === self.location.origin) {
-        const banSao = res.clone();
-        caches.open(PHIEN_BAN).then((c) => c.put(e.request, banSao));
-      }
+  const cungTrang = new URL(e.request.url).origin === self.location.origin;
+  if (!cungTrang) return;
+  e.respondWith((async () => {
+    const cache = await caches.open(PHIEN_BAN);
+    try {
+      const res = await Promise.race([
+        fetch(e.request, { cache: 'no-cache' }),
+        new Promise((_, loi) => setTimeout(() => loi(new Error('cham')), 4000)),
+      ]);
+      if (res.ok) cache.put(e.request, res.clone());
       return res;
-    })),
-  );
+    } catch (err) {
+      const daLuu = await cache.match(e.request, { ignoreSearch: true });
+      if (daLuu) return daLuu;
+      throw err;
+    }
+  })());
 });
