@@ -69,26 +69,26 @@ export const LEVELS = {
       man: 4,
       tieuDe: 'Khủng long cổ dài đói bụng',
       cauChuyen: '',
-      cau: [cong(12, 5, [17, 16, 71]), cong(20, 30, [50, 5, 40]), dem(36, 4, 8), cong(23, 14, [37, 36, 47])],
+      cau: [cong(2, 3, [5, 4, 6]), cong(4, 1, [5, 3, 6]), dem(36, 4, 8), cong(3, 3, [6, 5, 7])],
     },
     {
       man: 5,
       tieuDe: 'Chợ trứng đông vui',
       cauChuyen: '',
-      cau: [cong(31, 26, [57, 75, 56]), cong(42, 35, [77, 67, 78]), cong(54, 24, [78, 87, 68, 79]), cong(60, 25, [85, 58, 35, 86])],
+      cau: [cong(5, 2, [7, 6, 8]), cong(4, 4, [8, 7, 9]), cong(6, 3, [9, 8, 10, 7]), cong(5, 5, [10, 9, 11, 8])],
     },
     {
       man: 6,
       tieuDe: 'Tiến sĩ Lộn Xộn bày bừa',
       cauChuyen: 'Ôi, giờ phải nhớ sang hàng chục rồi! Ted thử xem nào.',
-      cau: [cong(18, 5, [23, 13, 22]), cong(27, 6, [33, 23, 32]), dem(45, 5, 7, 2), cong(15, 17, [32, 22, 31, 23]), cong(28, 14, [42, 32, 41, 52])],
+      cau: [cong(9, 2, [11, 10, 12]), cong(7, 4, [11, 12, 10]), dem(45, 5, 7, 2), cong(8, 5, [13, 12, 14, 15]), cong(6, 6, [12, 11, 13, 14])],
     },
     {
       man: 7,
       tieuDe: 'Giúp Khủng long cổ dài dọn nhà',
       cauChuyen:
         'Tiến sĩ Lộn Xộn bày đồ lộn xộn khắp nhà Khủng long cổ dài. Ted giúp bạn ấy dọn dẹp và tìm lại Đá Năng Lượng nào!',
-      cau: [dem(58, 6, 9, 2), cong(36, 27, [63, 53, 62, 73]), cong(45, 38, [83, 73, 82, 93]), cong(49, 26, [75, 65, 74, 85]), cong(57, 35, [92, 82, 91, 29])],
+      cau: [dem(58, 6, 9, 2), cong(7, 7, [14, 13, 15, 41]), cong(8, 6, [14, 15, 13, 12]), cong(9, 7, [16, 15, 17, 61]), cong(8, 9, [17, 16, 18, 71])],
     },
   ],
   vung2: [

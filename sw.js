@@ -1,6 +1,6 @@
 // Service worker: lưu toàn bộ game vào máy để chơi được khi không có mạng.
 // Khi có mạng game luôn lấy bản mới nhất. Tăng số phiên bản khi thêm/bớt file để bản lưu offline được làm mới.
-const PHIEN_BAN = 'ted-v5';
+const PHIEN_BAN = 'ted-v6';
 
 const FILE_GAME = [
   './',
