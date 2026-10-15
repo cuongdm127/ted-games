@@ -117,3 +117,24 @@ export function dauSoSanh(dau) {
     <circle cx="30" cy="38" r="6" fill="#FFFFFF" stroke="${INK}" stroke-width="2.5"/><circle cx="31" cy="38" r="2.8" fill="${INK}"/>
   </g></svg>`;
 }
+
+/**
+ * Bãi xe nhìn từ trên: mỗi chục là một hàng dọc 10 xe có khung, xe lẻ xếp thành cột riêng.
+ * Số xe vẽ đúng bằng so, để Ted so được bằng mắt (giống que tính chục và đơn vị).
+ */
+export function baiXeDem(so, mau = '#E8443A') {
+  const chuc = Math.floor(so / 10);
+  const le = so % 10;
+  const O = 11; // bước mỗi ô xe
+  const xe = (x, y) => `<g transform="translate(${x} ${y})"><rect width="9" height="9.4" rx="2.6" fill="${mau}" stroke="${INK}" stroke-width="0.9"/><rect x="1.8" y="1.6" width="5.4" height="2.6" rx="1" fill="#BFE6FF"/></g>`;
+  let s = '';
+  for (let c = 0; c < chuc; c++) {
+    const x = c * 15;
+    s += `<rect x="${x - 1.5}" y="-1.5" width="12" height="${10 * O + 1.4}" rx="3.5" fill="none" stroke="#FFFFFF" stroke-width="1.4"/>`;
+    for (let i = 0; i < 10; i++) s += xe(x, i * O);
+  }
+  const xLe = chuc * 15 + (chuc ? 5 : 0);
+  for (let i = 0; i < le; i++) s += xe(xLe, (10 - le + i) * O);
+  const rong = xLe + (le ? 10 : -4.5) + 2;
+  return `<svg class="bai-xe-dem" viewBox="-2 -2 ${Math.max(rong, 12) + 2} ${10 * O + 3}" preserveAspectRatio="xMidYMax meet" aria-hidden="true">${s}</svg>`;
+}

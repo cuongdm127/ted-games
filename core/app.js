@@ -15,8 +15,9 @@ import { taoCau as taoCauTimSo } from '../games/timso.js';
 import { taoCau as taoCauSoSanh } from '../games/sosanh.js';
 import { taoCau as taoCauChoHang } from '../games/chohang.js';
 import { taoCau as taoCauXepXe } from '../games/xepxe.js';
+import { taoCau as taoCauGoiBo } from '../games/goibo.js';
 
-const MODULES = { dem: taoCauDem, timso: taoCauTimSo, sosanh: taoCauSoSanh, chohang: taoCauChoHang, xepxe: taoCauXepXe };
+const MODULES = { dem: taoCauDem, timso: taoCauTimSo, sosanh: taoCauSoSanh, chohang: taoCauChoHang, xepxe: taoCauXepXe, goibo: taoCauGoiBo };
 const LOI_KHEN = ['Giỏi quá, Ted ơi!', 'Tuyệt lắm!', 'Ted làm đúng rồi!', 'Hay quá, Ted ơi!'];
 const SO_VUNG = 5;
 
@@ -84,6 +85,7 @@ let vungDangChoi = 1;
 let cauIndex = 0;
 let soLanSaiCau = 0;
 let tongSoLanSaiMan = 0;
+let soLanLamMauMan = 0;
 let controllerHienTai = null;
 let henGio = null;
 let hangCho = []; // các màn phần thưởng chờ hiện sau khi xong màn
@@ -206,6 +208,7 @@ function batDauMan(vung, soMan) {
   manHienTai = levelsCua(vung)[soMan - 1];
   cauIndex = 0;
   tongSoLanSaiMan = 0;
+  soLanLamMauMan = 0;
   cauHienTai = null;
   hangCho = [];
   khungCau.innerHTML = '';
@@ -245,10 +248,12 @@ function batDauCau() {
 function xuLyDung(loiKhen) {
   phatDung();
   rexVui();
-  rexNoi(typeof loiKhen === 'string' ? loiKhen : LOI_KHEN[Math.floor(Math.random() * LOI_KHEN.length)]);
+  const loi = typeof loiKhen === 'string' ? loiKhen : LOI_KHEN[Math.floor(Math.random() * LOI_KHEN.length)];
+  rexNoi(loi);
   cauIndex++;
   veTienDo();
-  henGio = setTimeout(batDauCau, 1500);
+  // Lời khen dài (nói lại đáp án) cần thời gian đọc hết trước khi sang câu mới.
+  henGio = setTimeout(batDauCau, Math.max(1500, loi.length * 80));
 }
 
 function xuLySai(loiNhac) {
@@ -264,6 +269,7 @@ function xuLySai(loiNhac) {
     if (controllerHienTai && controllerHienTai.goiYDapAn) controllerHienTai.goiYDapAn();
   } else {
     rexNoi('Để Rex làm mẫu nhé!');
+    soLanLamMauMan++;
     hienLaiDeSau(3000);
     if (controllerHienTai && controllerHienTai.lamMau) {
       controllerHienTai.lamMau(() => {
@@ -297,7 +303,7 @@ function veThanhRuong(prefix) {
 }
 
 function ketThucMan() {
-  const soSao = tinhSao(tongSoLanSaiMan);
+  const soSao = tinhSao(soLanLamMauMan);
   const soMan = levelsCua(vungDangChoi).length;
   const laManCuoi = manHienTai.man === soMan;
   storage.luuMan(vungDangChoi, manHienTai.man, soSao);

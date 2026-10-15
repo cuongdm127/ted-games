@@ -181,7 +181,11 @@ export function taoCau(container, cauData, hooks) {
       xongRoi = true;
       capNhatDem();
       khungLong.classList.add('vui');
-      hooks.onDung();
+      const chuc = Math.floor(soLuong / 10);
+      const le = soLuong % 10;
+      hooks.onDung(soBo > 0 && chuc > 0
+        ? `Đúng ${soLuong} lá: ${chuc} bó${le ? ` và ${le} lá` : ''}!`
+        : `Đúng ${soLuong} lá rồi!`);
     } else if (daChoAn > soLuong) {
       // Cho ăn thừa: khủng long nhả hết lá ra để Ted đếm lại từ đầu.
       nhaHet();

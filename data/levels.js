@@ -5,9 +5,10 @@
 //   soBo      số bó 10 lá có trên bãi cỏ
 //   soLe      số lá lẻ có trên bãi cỏ
 //   soMoiNhu  số khúc xương (mồi nhử, không được cho ăn)
+// Kiểu 'goibo' (gói bó): soBo bó phải gói, soLa lá lẻ trên bãi; Ted đặt lá vào khung 10 ô.
 // Kiểu 'timso' (chạm trứng):
 //   soDung    số đúng; soLuaChon: các trứng hiện ra
-//   phepTinh  (tuỳ chọn) phép tính hiện trên bảng, ví dụ '12 + 5'
+//   phepTinh  (tuỳ chọn) phép tính hiện trên bảng, ví dụ '3 + 5'; hinh: true để vẽ chấm trong khung 10 ô
 // Kiểu 'sosanh' (Vùng 2): trai, phai: số trên hai bãi xe; chon: 'lon' (nhiều hơn), 'nho' (ít hơn) hoặc 'dau' (chọn dấu <, =, >)
 // Kiểu 'chohang' (Vùng 2): xe: các số, mỗi xe chở thùng chục và thùng lẻ, bé kéo về kho đúng số
 // Kiểu 'xepxe' (Vùng 2): so: các số trên xe đua, bé xếp từ nhỏ đến lớn
@@ -27,6 +28,16 @@ const cong = (a, b, soLuaChon) => ({
   kieu: 'timso', soDung: a + b, soLuaChon, phepTinh: `${a} + ${b}`,
   hoi: `${a} + ${b} bằng mấy?`,
   doc: `${a} cộng ${b} bằng mấy?`,
+});
+
+// Phép cộng có chấm trong khung 10 ô để Ted đếm được.
+const congHinh = (a, b, soLuaChon) => ({ ...cong(a, b, soLuaChon), hinh: true });
+
+// Gói lá lẻ thành bó 10: soBo bó phải gói, soLa lá có trên bãi.
+const goiBo = (soBo, soLa) => ({
+  kieu: 'goibo', soBo, soLa,
+  hoi: soBo === 1 ? 'Gói 10 lá thành 1 bó nhé!' : `Gói ${soBo} bó lá nhé!`,
+  doc: soBo === 1 ? 'Ted đặt từng lá vào khung. Đủ 10 lá là gói được 1 bó!' : `Gói ${soBo} bó lá nhé! Mỗi bó 10 lá.`,
 });
 
 const soSanh = (trai, phai, chon = 'lon') => ({
@@ -52,50 +63,51 @@ const xepXe = (...so) => ({
   hoi: 'Xếp xe từ số nhỏ đến số lớn nhé!',
 });
 
+// Thứ tự bài theo lộ trình học: mỗi màn chỉ thêm một điều mới, màn cuối ôn lại.
 export const LEVELS = {
   vung1: [
     {
       man: 1,
       tieuDe: 'Bãi trứng đầu tiên',
-      cauChuyen: 'Khủng long cổ dài lớn lắm, ăn nhiều lá lắm! Mỗi bó có 10 lá đó, Ted ơi.',
-      cau: [dem(13, 1, 4), dem(21, 2, 3), dem(30, 3, 2)],
+      cauChuyen: 'Khủng long cổ dài đói lắm! Ted đếm lá cho bạn ấy ăn nhé.',
+      cau: [dem(12, 0, 15), dem(16, 0, 19), dem(20, 0, 22, 1)],
     },
     {
       man: 2,
-      tieuDe: 'Vườn lá rậm rạp',
-      cauChuyen: '',
-      cau: [dem(25, 3, 6), dem(34, 4, 6), dem(42, 5, 4)],
+      tieuDe: 'Gói lá thành bó',
+      cauChuyen: 'Lá nhiều quá, đếm mỏi tay! Mình gói 10 lá thành 1 bó cho dễ đếm nhé.',
+      cau: [goiBo(1, 13), goiBo(2, 24), dem(13, 1, 6)],
     },
     {
       man: 3,
+      tieuDe: 'Vườn lá rậm rạp',
+      cauChuyen: 'Mỗi bó có 10 lá. Ted đếm bó trước, rồi đếm lá lẻ nhé!',
+      cau: [dem(23, 2, 6), dem(31, 3, 4), dem(45, 4, 8), dem(50, 5, 3)],
+    },
+    {
+      man: 4,
       tieuDe: 'Những quả trứng số',
       cauChuyen: '',
       cau: [timSo(47, [47, 74, 41]), timSo(16, [61, 16, 60]), timSo(89, [98, 88, 89]), timSo(52, [25, 52, 50, 62])],
     },
     {
-      man: 4,
-      tieuDe: 'Khủng long cổ dài đói bụng',
-      cauChuyen: '',
-      cau: [cong(2, 3, [5, 4, 6]), cong(4, 1, [5, 3, 6]), dem(36, 4, 8), cong(3, 3, [6, 5, 7])],
-    },
-    {
       man: 5,
-      tieuDe: 'Chợ trứng đông vui',
-      cauChuyen: '',
-      cau: [cong(5, 2, [7, 6, 8]), cong(4, 4, [8, 7, 9]), cong(6, 3, [9, 8, 10, 7]), cong(5, 5, [10, 9, 11, 8])],
+      tieuDe: 'Trứng nở thêm',
+      cauChuyen: 'Trứng màu cam và trứng màu xanh. Ted đếm hết các chấm để cộng nhé!',
+      cau: [congHinh(3, 1, [4, 3, 5]), congHinh(5, 2, [7, 6, 8]), congHinh(6, 1, [7, 8, 6]), congHinh(7, 2, [9, 8, 10])],
     },
     {
       man: 6,
-      tieuDe: 'Tiến sĩ Lộn Xộn bày bừa',
-      cauChuyen: 'Ôi, giờ phải nhớ sang hàng chục rồi! Ted thử xem nào.',
-      cau: [cong(9, 2, [11, 10, 12]), cong(7, 4, [11, 12, 10]), dem(45, 5, 7, 2), cong(8, 5, [13, 12, 14, 15]), cong(6, 6, [12, 11, 13, 14])],
+      tieuDe: 'Gộp cho đủ 10',
+      cauChuyen: 'Khung có 10 ô. Ô nào cũng đầy là đủ 10 rồi đó!',
+      cau: [congHinh(4, 4, [8, 7, 9]), congHinh(4, 5, [9, 8, 10]), congHinh(8, 2, [10, 9, 11]), congHinh(9, 3, [12, 11, 13]), congHinh(8, 5, [13, 12, 14])],
     },
     {
       man: 7,
       tieuDe: 'Giúp Khủng long cổ dài dọn nhà',
       cauChuyen:
         'Tiến sĩ Lộn Xộn bày đồ lộn xộn khắp nhà Khủng long cổ dài. Ted giúp bạn ấy dọn dẹp và tìm lại Đá Năng Lượng nào!',
-      cau: [dem(58, 6, 9, 2), cong(7, 7, [14, 13, 15, 41]), cong(8, 6, [14, 15, 13, 12]), cong(9, 7, [16, 15, 17, 61]), cong(8, 9, [17, 16, 18, 71])],
+      cau: [dem(36, 4, 8, 2), timSo(62, [26, 62, 60]), cong(6, 6, [12, 11, 13]), congHinh(7, 5, [12, 11, 13, 21]), cong(9, 7, [16, 15, 17, 61])],
     },
   ],
   vung2: [
@@ -103,43 +115,43 @@ export const LEVELS = {
       man: 1,
       tieuDe: 'Bãi đỗ xe',
       cauChuyen: 'Chào mừng Ted đến Thành Phố Xe! Tiến sĩ Lộn Xộn làm rối hết các bãi đỗ rồi.',
-      cau: [soSanh(38, 52), soSanh(71, 17), soSanh(45, 54), soSanh(60, 59)],
+      cau: [soSanh(12, 17), soSanh(19, 14), soSanh(8, 15), soSanh(16, 11)],
     },
     {
       man: 2,
-      tieuDe: 'Miệng khủng long',
-      cauChuyen: 'Dấu so sánh giống miệng khủng long: miệng luôn há về phía số lớn hơn!',
-      cau: [soSanh(83, 38, 'nho'), chonDau(25, 52), chonDau(70, 17), soSanh(29, 92, 'nho'), chonDau(44, 44), chonDau(66, 64)],
+      tieuDe: 'Nhiều hay ít',
+      cauChuyen: '',
+      cau: [soSanh(13, 18, 'nho'), soSanh(20, 12), soSanh(25, 19, 'nho'), soSanh(14, 24)],
     },
     {
       man: 3,
-      tieuDe: 'Kho hàng',
-      cauChuyen: 'Mỗi thùng cam có 10 món hàng, thùng vàng có 1 món. Ted đếm giúp nhé!',
-      cau: [choHang(34, 43, 26), choHang(51, 15, 50)],
+      tieuDe: 'Miệng khủng long',
+      cauChuyen: 'Dấu so sánh giống miệng khủng long: miệng luôn há về phía số lớn hơn!',
+      cau: [soSanh(18, 13), soSanh(21, 12, 'nho'), soSanh(17, 27), chonDau(12, 21), chonDau(15, 15), chonDau(24, 19)],
     },
     {
       man: 4,
-      tieuDe: 'Đường đua',
-      cauChuyen: '',
-      cau: [xepXe(12, 27, 35, 58, 81), xepXe(40, 14, 44, 41)],
+      tieuDe: 'Kho hàng',
+      cauChuyen: 'Thùng cam có 10 món hàng, giống 1 bó lá đó. Thùng vàng có 1 món. Ted đếm giúp nhé!',
+      cau: [choHang(13, 31, 20), choHang(34, 43, 26)],
     },
     {
       man: 5,
       tieuDe: 'Ngã tư đông vui',
-      cauChuyen: '',
-      cau: [chonDau(67, 76), choHang(62, 26, 60), xepXe(19, 91, 29, 92), chonDau(81, 18)],
+      cauChuyen: 'Số càng nhiều chục thì càng lớn. Ted nhìn hàng chục trước nhé!',
+      cau: [chonDau(38, 52), soSanh(71, 17), chonDau(45, 54), soSanh(83, 38, 'nho'), chonDau(60, 59)],
     },
     {
       man: 6,
-      tieuDe: 'Tiến sĩ Lộn Xộn chặn đường',
-      cauChuyen: 'Các số giống nhau quá, Ted nhìn thật kỹ nhé!',
-      cau: [chonDau(88, 89), choHang(70, 7, 17), xepXe(33, 38, 83, 30, 80), soSanh(56, 65, 'nho'), chonDau(50, 50)],
+      tieuDe: 'Đường đua',
+      cauChuyen: '',
+      cau: [xepXe(12, 35, 81), xepXe(40, 14, 27), xepXe(19, 91, 55, 30)],
     },
     {
       man: 7,
       tieuDe: 'Cứu Khủng long ba sừng',
       cauChuyen: 'Khủng long ba sừng bị kẹt giữa đường đua! Ted dọn đường để tìm Đá Năng Lượng nào!',
-      cau: [choHang(47, 74, 40), chonDau(99, 90), xepXe(15, 51, 55, 50, 5), chonDau(39, 93), choHang(38, 83, 33)],
+      cau: [chonDau(56, 59), soSanh(88, 89), choHang(47, 74, 40), xepXe(33, 38, 83, 30), chonDau(99, 90)],
     },
   ],
 };

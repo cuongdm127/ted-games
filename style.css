@@ -1527,3 +1527,118 @@ svg { display: block; }
   .nut-dau-hinh { width: 70%; }
   .nut-dau-chu { display: none; }
 }
+
+/* ---------- Khung 10 ô (dùng chung: gói bó, phép cộng) ---------- */
+.khung-muoi {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 6%;
+  background: #fff;
+  border: 5px solid var(--muc);
+  border-radius: 18px;
+  padding: 5%;
+  aspect-ratio: 5 / 2.2;
+}
+.o-muoi {
+  border-radius: 10px;
+  background: #EEF3F8;
+  border: 3px dashed #C8D3E0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.o-muoi svg { width: 80%; height: 80%; }
+.o-muoi.co-la { background: #E6F7E6; border: 3px solid #A9DCA0; animation: nay-to 0.3s ease-out; }
+
+/* ---------- Gói bó 10 lá ---------- */
+.man-goibo { position: absolute; inset: 0; }
+.man-goibo .khu-tho { right: 44%; }
+.khu-goi {
+  position: absolute;
+  right: 3%;
+  top: 6%;
+  bottom: 6%;
+  width: 40%;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5%;
+}
+.hang-bo { display: flex; gap: 12px; }
+.cho-bo {
+  width: clamp(56px, 13vh, 96px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 4px dashed rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.35);
+}
+.cho-bo.co-bo { border: 4px solid #fff; background: #FFF4D6; animation: nay-to 0.5s ease-out; }
+.cho-bo svg { width: 100%; height: 100%; }
+.khung-goi { width: 100%; }
+.khung-goi.dang-buoc { animation: buoc-bo 0.9s ease-in-out; }
+@keyframes buoc-bo {
+  0% { transform: scale(1); }
+  40% { transform: scale(0.6, 0.9); filter: brightness(1.1); }
+  100% { transform: scale(1); }
+}
+.dem-goi {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border-radius: 22px;
+  padding: 4px 20px 4px 12px;
+  box-shadow: 0 6px 0 rgba(36, 50, 74, 0.15);
+  font-family: var(--chu-to);
+  font-weight: 800;
+  font-size: clamp(32px, 8vh, 60px);
+  color: #2E8B3A;
+  line-height: 1.1;
+}
+.dem-goi .dem-la svg { width: 1em; height: 1em; }
+
+/* ---------- Phép cộng có hình ---------- */
+.bang-phep-tinh.co-hinh { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 6px 28px 14px; }
+.hang-khung-muoi { display: flex; gap: 14px; }
+.hang-khung-muoi .khung-muoi { width: clamp(150px, 26vw, 280px); border-width: 4px; padding: 4%; gap: 5%; }
+.o-muoi.cham-a, .o-muoi.cham-b { border-style: solid; }
+.o-muoi.cham-a { background: #FFE2CC; border-color: #FFB27A; }
+.o-muoi.cham-b { background: #D6E7FF; border-color: #8DB8F5; }
+.o-muoi i { display: block; width: 72%; aspect-ratio: 1; border-radius: 50%; }
+.o-muoi.cham-a i { background: var(--cam); }
+.o-muoi.cham-b i { background: #3B82F6; }
+.so-a { color: var(--cam); }
+.so-b { color: #3B82F6; }
+.co-hinh-cong .luoi-trung { inset: 44% 0 4% 0; align-items: center; }
+.co-hinh-cong .o-trung { height: clamp(90px, 34vh, 170px); }
+
+@media (max-height: 520px) {
+  .dem-goi { font-size: 30px; }
+  .cho-bo { width: 52px; }
+  .bang-phep-tinh.co-hinh { font-size: 34px; padding: 2px 18px 8px; }
+  .hang-khung-muoi .khung-muoi { width: 170px; }
+  .co-hinh-cong .luoi-trung { inset: 50% 0 2% 0; }
+  .co-hinh-cong .o-trung { height: 38vh; }
+}
+
+/* Bãi xe vẽ đúng số xe */
+.xe-dem { flex: 1; min-height: 0; width: 100%; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 4%; }
+.bai-xe-dem { width: 100%; height: 100%; max-height: 100%; }
+.man-sosanh .bai-xe { justify-content: flex-end; gap: 3%; }
+.man-sosanh .bien-so { font-size: clamp(44px, 11vh, 96px); }
+@media (max-height: 520px) {
+  .man-sosanh.chon-dau .xe-dem { display: flex; }
+  .man-sosanh.chon-dau .bai-xe { justify-content: flex-end; }
+  .man-sosanh.chon-dau .bien-so { font-size: clamp(34px, 11vh, 60px); }
+}
+.xe-dem { position: relative; align-self: stretch; }
+.xe-dem .bai-xe-dem { position: absolute; left: 4%; right: 4%; top: 2%; bottom: 6%; width: 92%; height: 92%; }
+.man-sosanh.chon-dau .hai-bai { top: 18%; bottom: 30%; }
+.man-sosanh.chon-dau .bien-so { font-size: clamp(34px, 8vh, 72px); border-width: 5px; }
+@media (max-height: 520px) {
+  .man-sosanh.chon-dau .hai-bai { top: 4%; bottom: 38%; }
+  .man-sosanh.chon-dau .bien-so { font-size: clamp(28px, 9vh, 48px); }
+}

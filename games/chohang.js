@@ -45,7 +45,7 @@ export function taoCau(container, cauData, hooks) {
     conLai--;
     if (conLai === 0 && !xongRoi) {
       xongRoi = true;
-      hooks.onDung();
+      hooks.onDung('Chở đúng hết rồi! Thùng cam là chục, thùng vàng là đơn vị.');
     }
   }
 

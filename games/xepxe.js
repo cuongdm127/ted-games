@@ -48,7 +48,7 @@ export function taoCau(container, cauData, hooks) {
     phatTiengCho();
     if (daXep === thuTuDung.length && !xongRoi) {
       xongRoi = true;
-      hooks.onDung();
+      hooks.onDung(`Đúng rồi: ${thuTuDung.join(', ')}!`);
     }
   }
 

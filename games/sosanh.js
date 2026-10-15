@@ -3,7 +3,7 @@
 //   'lon' / 'nho': bé chạm bãi có nhiều (ít) xe hơn, đúng thì dấu hiện ra ở giữa.
 //   'dau': bé chọn dấu <, =, > đặt vào giữa hai bãi.
 // Dấu vẽ thành miệng khủng long, luôn há về phía số lớn hơn.
-import { oTo, MAU_XE, CANH_THANH_PHO, dauSoSanh } from '../core/art-vung2.js';
+import { MAU_XE, CANH_THANH_PHO, dauSoSanh, baiXeDem } from '../core/art-vung2.js';
 
 const TEN_DAU = { '<': 'bé hơn', '>': 'lớn hơn', '=': 'bằng' };
 
@@ -22,8 +22,7 @@ export function taoCau(container, cauData, hooks) {
   const the = chonDau ? 'div' : 'button';
   const bai = (so, ben) => `
     <${the} class="bai-xe" data-so="${so}" ${chonDau ? 'role="img"' : ''} aria-label="Bãi có ${so} xe">
-      <span class="hang-xe">${[0, 1, 2].map((i) => `<span class="xe-do">${oTo(MAU_XE[(i + (ben === 'trai' ? 0 : 3)) % MAU_XE.length])}</span>`).join('')}</span>
-      <span class="vach-do" aria-hidden="true"></span>
+      <span class="xe-dem">${baiXeDem(so, MAU_XE[ben === 'trai' ? 0 : 1])}</span>
       <span class="bien-so">${so}</span>
     </${the}>`;
 
