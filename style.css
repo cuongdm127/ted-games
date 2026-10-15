@@ -1433,3 +1433,10 @@ svg { display: block; }
 /* Ảnh thật làm hình đại diện trên bản đồ */
 .mat-ted img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .mat-ted img { transform: scale(2.4); transform-origin: 51% 62%; }
+
+/* Bong bóng Rex: chạm để nghe lại đề */
+.bong-rex { cursor: pointer; }
+.bong-rex:active { transform: scale(0.98); }
+.nut-loa.nhac-loa { animation: nhac-loa 0.6s ease-in-out 1.2s 3; }
+.nut-loa.dang-doc { animation: nay-to 0.4s ease-out; }
+@keyframes nhac-loa { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.18); box-shadow: 0 4px 0 var(--cam-dam), 0 0 0 10px rgba(255, 122, 48, 0.25); } }

@@ -3,7 +3,7 @@ import { LEVELS } from '../data/levels.js';
 import { renderBanDo, tenVung } from './map.js';
 import { storage } from './storage.js';
 import { tinhSao } from './rewards.js';
-import { noi, noiLai } from './speech.js';
+import { noi } from './speech.js';
 import { khoiTaoAm, phatDung, phatSai } from './audio.js';
 import { khoiDongNhac, chonBai, batTatNhac, nhacDangBat } from './music.js';
 import { rex, rexMat, tedMat, tedToanThan, xeTed, hinhDo, sao, daNangLuong, ruong, icon } from './art.js';
@@ -153,9 +153,38 @@ $('nut-vung-sau').addEventListener('click', () => {
 });
 
 // ---------- Màn chơi ----------
+let cauHienTai = null;   // câu đang làm (null khi Rex đang kể chuyện đầu màn)
+let henGioBong = null;   // hẹn giờ đưa bong bóng về lại đề bài
+
 function rexNoi(text) {
+  clearTimeout(henGioBong);
   rexNoiBong.textContent = text;
   noi(text);
+}
+
+// Ted chạm vào bong bóng Rex (hoặc nút loa): Rex đọc lại đề của câu đang làm.
+function docLaiDe() {
+  clearTimeout(henGioBong);
+  const nutLoa = $('nut-loa');
+  nutLoa.classList.remove('dang-doc');
+  void nutLoa.offsetWidth;
+  nutLoa.classList.add('dang-doc');
+  rexVui();
+  if (cauHienTai) {
+    rexNoiBong.textContent = cauHienTai.hoi;
+    noi(cauHienTai.doc || cauHienTai.hoi);
+  } else if (manHienTai && manHienTai.cauChuyen) {
+    rexNoiBong.textContent = manHienTai.cauChuyen;
+    noi(manHienTai.cauChuyen);
+  }
+}
+
+// Sau lời nhắc "Thử lại nhé", bong bóng tự hiện lại đề bài để bố mẹ đọc được.
+function hienLaiDeSau(ms) {
+  clearTimeout(henGioBong);
+  henGioBong = setTimeout(() => {
+    if (cauHienTai) rexNoiBong.textContent = cauHienTai.hoi;
+  }, ms);
 }
 
 function rexVui() {
@@ -177,6 +206,7 @@ function batDauMan(vung, soMan) {
   manHienTai = levelsCua(vung)[soMan - 1];
   cauIndex = 0;
   tongSoLanSaiMan = 0;
+  cauHienTai = null;
   hangCho = [];
   khungCau.innerHTML = '';
   khungCau.dataset.vung = String(vung);
@@ -198,10 +228,17 @@ function batDauCau() {
   }
   soLanSaiCau = 0;
   const cauData = manHienTai.cau[cauIndex];
+  cauHienTai = cauData;
   khungCau.innerHTML = '';
   // 'doc' là câu Rex đọc thành tiếng, 'hoi' là chữ hiện trong bong bóng.
+  clearTimeout(henGioBong);
   rexNoiBong.textContent = cauData.hoi;
   noi(cauData.doc || cauData.hoi);
+  // Nút loa nhún nhẹ để Ted biết chỗ bấm nghe lại.
+  const nutLoa = $('nut-loa');
+  nutLoa.classList.remove('nhac-loa');
+  void nutLoa.offsetWidth;
+  nutLoa.classList.add('nhac-loa');
   controllerHienTai = MODULES[cauData.kieu](khungCau, cauData, { onDung: xuLyDung, onSai: xuLySai });
 }
 
@@ -220,11 +257,14 @@ function xuLySai() {
   phatSai();
   if (soLanSaiCau === 1) {
     rexNoi('Thử lại nhé, Ted ơi!');
+    hienLaiDeSau(2500);
   } else if (soLanSaiCau === 2) {
     rexNoi('Nhìn kỹ gợi ý nhé!');
+    hienLaiDeSau(2500);
     if (controllerHienTai && controllerHienTai.goiYDapAn) controllerHienTai.goiYDapAn();
   } else {
     rexNoi('Để Rex làm mẫu nhé!');
+    hienLaiDeSau(3000);
     if (controllerHienTai && controllerHienTai.lamMau) {
       controllerHienTai.lamMau(() => {
         soLanSaiCau = 0;
@@ -290,7 +330,8 @@ function tiepTheo() {
 $('nut-ve-ban-do').addEventListener('click', veBanDo);
 $('nut-tiep-tuc').addEventListener('click', tiepTheo);
 $('nut-choi-lai').addEventListener('click', () => batDauMan(vungDangChoi, manHienTai.man));
-$('nut-loa').addEventListener('click', noiLai);
+// Chạm vào bất kỳ đâu trên bong bóng Rex (mặt Rex, chữ, nút loa) đều nghe lại đề.
+document.querySelector('.bong-rex').addEventListener('click', docLaiDe);
 
 // ---------- Đá Năng Lượng ----------
 let vungVuaXong = 1;
