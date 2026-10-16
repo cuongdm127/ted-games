@@ -22,7 +22,7 @@ export function taoCau(container, cauData, hooks) {
       ${CANH_CO}
       <div class="khu-tho" id="khu-tho"></div>
       <div class="khu-khung-long">
-        <div class="khung-long" id="khung-long" role="img" aria-label="Khủng long cổ dài đang há miệng chờ ăn">${khungLongCoDai()}</div>
+        <div class="khung-long" id="khung-long" role="img" aria-label="Khủng long cổ dài đang há miệng chờ ăn">${khungLongCoDai(hooks.mauKhungLong)}</div>
         <div class="hang-duoi">
           <div class="dem-hien-thi" id="dem-hien-thi" role="status">
             <span class="dem-la">${la()}</span><span class="dem-so" id="dem-so">0</span>

@@ -36,18 +36,30 @@ export function rexMat() {
 }
 
 // Khủng long cổ dài, có vòng nét đứt quanh miệng để bé biết thả lá vào đâu.
-export function khungLongCoDai() {
+// Mỗi màn khủng long cổ dài một màu (Ted yêu cầu). ten: Rex đọc lúc vào màn.
+export const MAU_KHUNG_LONG = [
+  { ten: 'xanh dương', than: '#6CC4D9', dam: '#4FA9C2', bung: '#BDEAF3' },
+  { ten: 'xanh lá', than: '#7CCB5E', dam: '#5AA83F', bung: '#D3F0C4' },
+  { ten: 'tím', than: '#A98BEB', dam: '#8566CF', bung: '#E2D6FA' },
+  { ten: 'hồng', than: '#F59BC0', dam: '#DD76A0', bung: '#FCDDEA' },
+  { ten: 'cam', than: '#FFA35C', dam: '#E9843A', bung: '#FFE0C4' },
+  { ten: 'vàng', than: '#F6CF3E', dam: '#D9AE1C', bung: '#FDF0B8' },
+  { ten: 'đỏ', than: '#F0705E', dam: '#D24F3E', bung: '#FCD3CC' },
+];
+
+export function khungLongCoDai(mau = MAU_KHUNG_LONG[0]) {
+  const { than, dam, bung } = mau;
   return `<svg viewBox="0 0 214 236" aria-hidden="true">
-    <path d="M40 176 Q0 184 4 156 Q20 170 50 161Z" fill="#4FA9C2"/>
-    <rect x="44" y="182" width="20" height="46" rx="10" fill="#4FA9C2"/>
-    <rect x="104" y="182" width="20" height="46" rx="10" fill="#4FA9C2"/>
-    <ellipse cx="85" cy="166" rx="60" ry="40" fill="#6CC4D9"/>
-    <ellipse cx="88" cy="182" rx="38" ry="16" fill="#BDEAF3"/>
-    <circle cx="66" cy="146" r="7" fill="#4FA9C2"/><circle cx="92" cy="136" r="5" fill="#4FA9C2"/><circle cx="110" cy="154" r="4" fill="#4FA9C2"/>
-    <rect x="62" y="186" width="20" height="46" rx="10" fill="#6CC4D9"/>
-    <rect x="122" y="184" width="20" height="46" rx="10" fill="#6CC4D9"/>
-    <path d="M118 146 Q146 116 146 62" stroke="#6CC4D9" stroke-width="30" fill="none" stroke-linecap="round"/>
-    <ellipse cx="154" cy="50" rx="28" ry="20" fill="#6CC4D9"/>
+    <path d="M40 176 Q0 184 4 156 Q20 170 50 161Z" fill="${dam}"/>
+    <rect x="44" y="182" width="20" height="46" rx="10" fill="${dam}"/>
+    <rect x="104" y="182" width="20" height="46" rx="10" fill="${dam}"/>
+    <ellipse cx="85" cy="166" rx="60" ry="40" fill="${than}"/>
+    <ellipse cx="88" cy="182" rx="38" ry="16" fill="${bung}"/>
+    <circle cx="66" cy="146" r="7" fill="${dam}"/><circle cx="92" cy="136" r="5" fill="${dam}"/><circle cx="110" cy="154" r="4" fill="${dam}"/>
+    <rect x="62" y="186" width="20" height="46" rx="10" fill="${than}"/>
+    <rect x="122" y="184" width="20" height="46" rx="10" fill="${than}"/>
+    <path d="M118 146 Q146 116 146 62" stroke="${than}" stroke-width="30" fill="none" stroke-linecap="round"/>
+    <ellipse cx="154" cy="50" rx="28" ry="20" fill="${than}"/>
     <g class="mieng"><ellipse cx="172" cy="60" rx="10" ry="8" fill="#8E2F3A"/><ellipse cx="172" cy="64" rx="6" ry="3.5" fill="#F48FA0"/></g>
     <circle cx="152" cy="42" r="6" fill="#fff"/><circle cx="153.5" cy="43" r="3" fill="${INK}"/>
     <circle cx="140" cy="56" r="4" fill="#F7B6C2" fill-opacity="0.8"/>

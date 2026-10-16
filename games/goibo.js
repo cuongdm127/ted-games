@@ -4,7 +4,7 @@
 // Ted chạm hoặc kéo từng lá vào khung 10 ô. Đủ 10 ô thì lá buộc lại thành 1 bó.
 import { lamKeoTha } from '../core/dragdrop.js';
 import { phatTiengCho } from '../core/audio.js';
-import { la, boLa } from '../core/art.js';
+import { la, boLa, khungLongCoDai } from '../core/art.js';
 
 const CANH_CO = `
   <div class="canh canh-co" aria-hidden="true">
@@ -21,6 +21,7 @@ export function taoCau(container, cauData, hooks) {
   container.innerHTML = `
     <div class="man-goibo">
       ${CANH_CO}
+      <div class="khung-long-canh khung-long-canh-goi" aria-hidden="true">${khungLongCoDai(hooks.mauKhungLong).replace('class="vong-mieng"', 'class="vong-mieng" display="none"')}</div>
       <div class="khu-tho" id="khu-tho"></div>
       <div class="khu-goi">
         <div class="hang-bo" id="hang-bo" role="status" aria-label="Đã gói 0 bó">

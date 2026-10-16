@@ -52,6 +52,10 @@
     <div class="rex-mo-dau" id="rex-mo-dau" aria-hidden="true"></div>
     <button class="nut-anh" id="nut-anh" aria-label="Đổi ảnh của bé: bố mẹ giữ 2 giây" data-icon="mayAnh"></button>
     <input type="file" accept="image/*" id="chon-anh" hidden />
+    <div class="bao-giong" id="bao-giong" role="note" hidden>
+      <p><b>Máy này chưa có giọng đọc tiếng Việt</b>, nên Rex chưa đọc đề được. Trên iPad/iPhone: <b>Cài đặt → Trợ năng → Nội dung được đọc → Giọng nói → Tiếng Việt</b>, tải một giọng rồi mở lại game.</p>
+      <button class="nut-phu" id="nut-dong-bao-giong">Đã hiểu</button>
+    </div>
     <div class="bang-anh" id="bang-anh" role="dialog" aria-label="Ảnh của bé" hidden>
       <p class="bang-anh-chu">Ảnh chỉ lưu trên máy này, không tải lên mạng.</p>
       <div class="bang-anh-nut">
@@ -119,6 +123,10 @@
           <span class="ruong-icon" id="ruong-icon"></span>
           <span class="ruong-chu" id="the-ruong-chu"></span>
         </div>
+      </div>
+      <div class="the-ngoai-doi" id="the-ngoai-doi" hidden>
+        <span class="ngoai-doi-hinh" data-icon="nha"></span>
+        <p><b>Cùng bố mẹ:</b> <span id="ngoai-doi-chu"></span></p>
       </div>
       <div class="hang-nut">
         <button id="nut-choi-lai" class="nut-tron nut-to" aria-label="Chơi lại" data-icon="choiLai"></button>

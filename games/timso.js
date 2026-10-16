@@ -1,4 +1,4 @@
-import { trung } from '../core/art.js';
+import { trung, khungLongCoDai } from '../core/art.js';
 
 const CANH_BAI_TRUNG = `
   <div class="canh canh-bai-trung" aria-hidden="true">
@@ -23,6 +23,7 @@ export function taoCau(container, cauData, hooks) {
   container.innerHTML = `
     <div class="man-timso${phepTinh ? ' co-phep-tinh' : ''}${coHinh ? ' co-hinh-cong' : ''}">
       ${CANH_BAI_TRUNG}
+      <div class="khung-long-canh" aria-hidden="true">${khungLongCoDai(hooks.mauKhungLong).replace('class="vong-mieng"', 'class="vong-mieng" display="none"')}</div>
       ${coHinh ? `<div class="bang-phep-tinh co-hinh" aria-label="${phepTinh} bằng mấy">
         <div><span class="so-a">${soA}</span> + <span class="so-b">${soB}</span> = <span class="o-hoi" id="o-hoi">?</span></div>
         ${veKhung()}

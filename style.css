@@ -1642,3 +1642,57 @@ svg { display: block; }
   .man-sosanh.chon-dau .hai-bai { top: 4%; bottom: 38%; }
   .man-sosanh.chon-dau .bien-so { font-size: clamp(28px, 9vh, 48px); }
 }
+
+/* Khủng long cổ dài đứng ngắm cảnh (đổi màu theo màn) */
+.khung-long-canh { position: absolute; left: 1%; bottom: 3%; width: 19%; max-width: 220px; z-index: 1; pointer-events: none; }
+.khung-long-canh svg { width: 100%; height: auto; display: block; }
+.khung-long-canh-goi { left: auto; right: 1%; bottom: 2%; width: 12%; }
+@media (max-height: 520px) { .khung-long-canh { width: 15%; } .khung-long-canh-goi { display: none; } }
+
+/* Việc làm cùng bố mẹ ở màn xong màn */
+.the-ngoai-doi {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  background: #FFF7E0;
+  border: 3px solid var(--vang);
+  border-radius: 20px;
+  padding: 10px 16px;
+  text-align: left;
+}
+.the-ngoai-doi[hidden] { display: none; }
+.ngoai-doi-hinh { flex: none; width: 44px; height: 44px; border-radius: 50%; background: var(--vang); color: var(--muc); display: flex; align-items: center; justify-content: center; }
+.ngoai-doi-hinh svg { width: 60%; height: 60%; }
+.the-ngoai-doi p { margin: 0; font-family: var(--chu-nho, 'Nunito', sans-serif); font-weight: 800; font-size: clamp(15px, 2.3vh, 20px); line-height: 1.3; color: var(--muc); }
+.the-ngoai-doi b { color: #C2410C; }
+@media (max-height: 520px) {
+  .the-ngoai-doi { padding: 6px 10px; gap: 8px; border-radius: 14px; }
+  .ngoai-doi-hinh { width: 30px; height: 30px; }
+  .the-ngoai-doi p { font-size: 13px; }
+}
+
+/* Báo thiếu giọng đọc tiếng Việt (cho bố mẹ) */
+.bao-giong {
+  position: absolute;
+  left: 50%;
+  bottom: 3%;
+  transform: translateX(-50%);
+  width: min(640px, 88vw);
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #fff;
+  border: 3px solid var(--cam);
+  border-radius: 20px;
+  padding: 10px 14px;
+  box-shadow: 0 8px 0 rgba(36, 50, 74, 0.18);
+}
+.bao-giong[hidden] { display: none; }
+.bao-giong p { margin: 0; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 14px; line-height: 1.35; color: var(--muc); text-align: left; }
+.bao-giong .nut-phu { flex: none; }
+@media (max-height: 520px) {
+  .bao-giong { top: 2%; bottom: auto; padding: 6px 10px; gap: 8px; }
+  .bao-giong p { font-size: 12px; }
+}

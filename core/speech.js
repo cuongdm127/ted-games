@@ -43,6 +43,13 @@ export function noi(text) {
   window.speechSynthesis.speak(utter);
 }
 
+/** Máy có giọng đọc tiếng Việt không (danh sách giọng có thể tải chậm, nên hỏi sau vài giây). */
+export function coGiongViet() {
+  if (!('speechSynthesis' in window)) return false;
+  if (!giongVi) chonGiong();
+  return !!giongVi;
+}
+
 export function noiLai() {
   if (cauCuoi) noi(cauCuoi);
 }

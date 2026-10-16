@@ -1,5 +1,5 @@
 // Sticker nhận được khi xong mỗi màn (mỗi vùng 7 sticker).
-import { la, boLa, trung, khungLongCoDai } from './art.js';
+import { la, boLa, trung, khungLongCoDai, MAU_KHUNG_LONG } from './art.js';
 import { oTo, xeDua, xeTaiHang, khoHang, denGiaoThong, coDich } from './art-vung2.js';
 
 const INK = '#24324A';
@@ -28,7 +28,7 @@ const nuiLua = `<svg viewBox="0 0 120 100" aria-hidden="true">
 const da = (mau, vien) => `<svg viewBox="0 0 22 26" aria-hidden="true"><path d="M11 1 L21 8 L17 25 L5 25 L1 8Z" fill="${mau}" stroke="${vien}" stroke-width="1.6" stroke-linejoin="round"/><path d="M1 8 L21 8 M11 1 L7 8 L11 25 L15 8Z" stroke="#fff" stroke-opacity="0.7" stroke-width="0.8" fill="none"/></svg>`;
 
 const DANH_SACH = {
-  1: [khungLongCon, boLa(), trung(7, 1), khungLongCoDai().replace('class="vong-mieng"', 'class="vong-mieng" display="none"'), toTrung, nuiLua, da('#9B86FF', '#6A58C9')],
+  1: [khungLongCon, boLa(), trung(7, 1), khungLongCoDai(MAU_KHUNG_LONG[3]).replace('class="vong-mieng"', 'class="vong-mieng" display="none"'), toTrung, nuiLua, da('#9B86FF', '#6A58C9')],
   2: [oTo('#E8443A'), xeDua(1, '#3B82F6'), xeTaiHang(23, '#4CB050'), denGiaoThong(), khoHang(), coDich(), da('#9B86FF', '#6A58C9')],
 };
 

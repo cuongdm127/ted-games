@@ -3,10 +3,10 @@ import { LEVELS } from '../data/levels.js';
 import { renderBanDo, tenVung } from './map.js';
 import { storage, CHE_DO_THU } from './storage.js';
 import { tinhSao } from './rewards.js';
-import { noi } from './speech.js';
+import { noi, coGiongViet } from './speech.js';
 import { khoiTaoAm, phatDung, phatSai } from './audio.js';
 import { khoiDongNhac, chonBai, batTatNhac, nhacDangBat } from './music.js';
-import { rex, rexMat, tedMat, tedToanThan, xeTed, hinhDo, sao, daNangLuong, ruong, icon } from './art.js';
+import { rex, rexMat, tedMat, tedToanThan, xeTed, hinhDo, sao, daNangLuong, ruong, icon, MAU_KHUNG_LONG } from './art.js';
 import { docAnh, luuAnhTuFile, xoaAnh } from './anh.js';
 import { DO, O_DO, SAO_MOT_RUONG, doTiepTheo, soRuongCho } from './items.js';
 import { sticker } from './stickers.js';
@@ -86,6 +86,10 @@ let cauIndex = 0;
 let soLanSaiCau = 0;
 let tongSoLanSaiMan = 0;
 let soLanLamMauMan = 0;
+let mauKhungLong = MAU_KHUNG_LONG[0];
+// Ted ngồi im 15 giây thì Rex đọc lại đề (tối đa 2 lần mỗi câu).
+let henGioNhacDe = null;
+let soLanNhacDe = 0;
 let controllerHienTai = null;
 let henGio = null;
 let hangCho = []; // các màn phần thưởng chờ hiện sau khi xong màn
@@ -97,6 +101,7 @@ let hangCho = []; // các màn phần thưởng chờ hiện sau khi xong màn
 
 function hienManHinh(ten) {
   clearTimeout(henGio);
+  clearTimeout(henGioNhacDe);
   Object.values(manHinh).forEach((m) => m.classList.add('an'));
   manHinh[ten].classList.remove('an');
   chonBai(['mo-dau', 'ban-do', 'tu-do', 'album'].includes(ten) ? 'ban-do' : 'choi');
@@ -215,9 +220,14 @@ function batDauMan(vung, soMan) {
   khungCau.dataset.vung = String(vung);
   hienManHinh('choi');
   veTienDo();
-  if (manHienTai.cauChuyen) {
-    rexNoi(manHienTai.cauChuyen);
-    henGio = setTimeout(batDauCau, 4500);
+  // Vùng 1: mỗi màn khủng long cổ dài một màu, Rex giới thiệu màu khi vào màn.
+  mauKhungLong = MAU_KHUNG_LONG[(soMan - 1) % MAU_KHUNG_LONG.length];
+  const loiMo = vung === 1
+    ? `Hôm nay khủng long cổ dài màu ${mauKhungLong.ten}! ${manHienTai.cauChuyen || ''}`.trim()
+    : manHienTai.cauChuyen;
+  if (loiMo) {
+    rexNoi(loiMo);
+    henGio = setTimeout(batDauCau, Math.max(3000, loiMo.length * 75));
   } else {
     batDauCau();
   }
@@ -242,10 +252,32 @@ function batDauCau() {
   nutLoa.classList.remove('nhac-loa');
   void nutLoa.offsetWidth;
   nutLoa.classList.add('nhac-loa');
-  controllerHienTai = MODULES[cauData.kieu](khungCau, cauData, { onDung: xuLyDung, onSai: xuLySai, noi: rexNoi });
+  soLanNhacDe = 0;
+  henNhacDe();
+  controllerHienTai = MODULES[cauData.kieu](khungCau, cauData, { onDung: xuLyDung, onSai: xuLySai, noi: rexNoi, mauKhungLong });
 }
 
+function henNhacDe() {
+  clearTimeout(henGioNhacDe);
+  henGioNhacDe = setTimeout(() => {
+    if (manHinh.choi.classList.contains('an') || !cauHienTai || soLanNhacDe >= 2) return;
+    soLanNhacDe += 1;
+    docLaiDe();
+    const nutLoa = $('nut-loa');
+    nutLoa.classList.remove('nhac-loa');
+    void nutLoa.offsetWidth;
+    nutLoa.classList.add('nhac-loa');
+    henNhacDe();
+  }, 15000);
+}
+
+// Ted chạm vào màn chơi là đang làm bài: đếm lại 15 giây từ đầu.
+manHinh.choi.addEventListener('pointerdown', () => {
+  if (cauHienTai && soLanNhacDe < 2) henNhacDe();
+});
+
 function xuLyDung(loiKhen) {
+  clearTimeout(henGioNhacDe);
   phatDung();
   rexVui();
   const loi = typeof loiKhen === 'string' ? loiKhen : LOI_KHEN[Math.floor(Math.random() * LOI_KHEN.length)];
@@ -321,9 +353,14 @@ function ketThucMan() {
   $('ket-qua-sticker').innerHTML = sticker(vungDangChoi, manHienTai.man);
   veThanhRuong('the-ruong');
 
+  // Việc nhỏ làm cùng bố mẹ ngoài đời, để Ted mang điều vừa học ra cuộc sống.
+  const ngoaiDoi = manHienTai.ngoaiDoi || '';
+  $('the-ngoai-doi').hidden = !ngoaiDoi;
+  $('ngoai-doi-chu').textContent = ngoaiDoi;
+
   phaoGiay($('phao-giay'));
   hienManHinh('ket-qua');
-  noi(`Ted được ${soSao} sao và một sticker mới!`);
+  noi(`Ted được ${soSao} sao và một sticker mới! ${ngoaiDoi}`.trim());
 }
 
 function tiepTheo() {
@@ -562,6 +599,14 @@ $('nut-xoa-anh').addEventListener('click', () => {
 });
 $('nut-dong-anh').addEventListener('click', () => {
   $('bang-anh').hidden = true;
+});
+
+// ---------- Báo bố mẹ khi máy không có giọng tiếng Việt ----------
+setTimeout(() => {
+  if (!coGiongViet() && !manHinh['mo-dau'].classList.contains('an')) $('bao-giong').hidden = false;
+}, 2500);
+$('nut-dong-bao-giong').addEventListener('click', () => {
+  $('bao-giong').hidden = true;
 });
 
 // ---------- Chơi offline ----------

@@ -1,7 +1,7 @@
 // Service worker: lưu toàn bộ game vào máy để mở nhanh và chơi được khi không có mạng.
 // QUAN TRỌNG: mỗi lần sửa bất kỳ file nào của game phải tăng PHIEN_BAN,
 // máy của bé mới tải bản mới (các file khác lấy thẳng từ bộ nhớ máy cho nhanh).
-const PHIEN_BAN = 'ted-v8';
+const PHIEN_BAN = 'ted-v9';
 
 const FILE_GAME = [
   './',
