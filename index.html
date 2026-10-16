@@ -16,6 +16,7 @@
 <link rel="stylesheet" href="./style.css" />
 <link rel="modulepreload" href="./core/app.js" />
 <link rel="modulepreload" href="./core/art.js" />
+<link rel="modulepreload" href="./core/bome.js" />
 <link rel="modulepreload" href="./core/art-vung2.js" />
 <link rel="modulepreload" href="./core/storage.js" />
 <link rel="modulepreload" href="./core/items.js" />
@@ -47,22 +48,17 @@
     <div class="mo-dau-giua">
       <div class="logo-game" id="logo-game"></div>
       <h1 class="ten-game"><span class="ten-game-ted">Ted</span><span class="ten-game-phu">và Đội Siêu Khủng Long</span></h1>
-      <button class="nut-chinh nut-co-chu nut-bat-dau" id="nut-bat-dau"><span data-icon="choi"></span><span>Chơi</span></button>
+      <div class="hang-nut-mo-dau">
+        <button class="nut-chinh nut-co-chu nut-bat-dau" id="nut-bat-dau"><span data-icon="choi"></span><span>Chơi</span></button>
+        <button class="nut-phu nut-de-bo" id="nut-de-bo" hidden>Đề của bố mẹ</button>
+      </div>
     </div>
     <div class="rex-mo-dau" id="rex-mo-dau" aria-hidden="true"></div>
-    <button class="nut-anh" id="nut-anh" aria-label="Đổi ảnh của bé: bố mẹ giữ 2 giây" data-icon="mayAnh"></button>
+    <button class="nut-anh" id="nut-anh" aria-label="Góc bố mẹ: giữ 2 giây" data-icon="khoa"></button>
     <input type="file" accept="image/*" id="chon-anh" hidden />
     <div class="bao-giong" id="bao-giong" role="note" hidden>
       <p><b>Máy này chưa có giọng đọc tiếng Việt</b>, nên Rex chưa đọc đề được. Trên iPad/iPhone: <b>Cài đặt → Trợ năng → Nội dung được đọc → Giọng nói → Tiếng Việt</b>, tải một giọng rồi mở lại game.</p>
       <button class="nut-phu" id="nut-dong-bao-giong">Đã hiểu</button>
-    </div>
-    <div class="bang-anh" id="bang-anh" role="dialog" aria-label="Ảnh của bé" hidden>
-      <p class="bang-anh-chu">Ảnh chỉ lưu trên máy này, không tải lên mạng.</p>
-      <div class="bang-anh-nut">
-        <button class="nut-chinh nut-co-chu nut-nho" id="nut-chon-anh">Chọn ảnh</button>
-        <button class="nut-phu" id="nut-xoa-anh">Dùng ảnh mặc định</button>
-        <button class="nut-phu" id="nut-dong-anh">Đóng</button>
-      </div>
     </div>
   </div>
 
@@ -226,6 +222,61 @@
         <div class="album-canh" id="album-canh"></div>
         <div class="album-canh-sticker" id="album-canh-sticker"></div>
       </div>
+    </div>
+  </div>
+
+  <!-- Góc bố mẹ (giữ nút khoá 2 giây ở màn mở đầu) -->
+  <div id="man-hinh-bo-me" class="man-hinh man-bo-me an">
+    <header class="thanh-tren">
+      <button class="nut-tron" id="nut-bo-me-dong" aria-label="Về màn mở đầu" data-icon="nha"></button>
+      <h1 class="tieu-de-trang">Góc bố mẹ</h1>
+    </header>
+    <div class="cuon-bo-me">
+      <section class="the-bo-me">
+        <h2>Thời gian chơi mỗi ngày</h2>
+        <div class="hang-chon" id="chon-phut" role="radiogroup" aria-label="Số phút mỗi ngày"></div>
+        <p class="mo-ta" id="bo-me-thoi-gian"></p>
+        <button class="nut-phu" id="nut-cho-them">Cho chơi thêm 10 phút hôm nay</button>
+      </section>
+      <section class="the-bo-me">
+        <h2>Ted hay vướng ở đâu</h2>
+        <div id="bang-thong-ke"></div>
+        <button class="nut-phu" id="nut-xoa-thong-ke">Xoá thống kê</button>
+      </section>
+      <section class="the-bo-me">
+        <h2>Đề của bố mẹ</h2>
+        <p class="mo-ta">Tự ra đề cho Ted. Ted chơi ở nút <b>Đề của bố mẹ</b> dưới nút Chơi.</p>
+        <form class="form-de" id="form-de">
+          <select id="de-kieu" aria-label="Kiểu đề"></select>
+          <input id="de-a" type="number" inputmode="numeric" min="0" max="99" aria-label="Số thứ nhất" placeholder="a" />
+          <input id="de-b" type="number" inputmode="numeric" min="0" max="99" aria-label="Số thứ hai" placeholder="b" />
+          <button class="nut-chinh nut-co-chu nut-nho" type="submit">Thêm</button>
+        </form>
+        <p class="loi-de" id="loi-de" role="alert"></p>
+        <ol class="ds-de" id="ds-de"></ol>
+        <div class="hang-nut-bo-me">
+          <button class="nut-phu" id="nut-de-ngau-nhien">Thêm 5 câu ngẫu nhiên</button>
+          <button class="nut-phu" id="nut-xoa-het-de">Xoá hết đề</button>
+        </div>
+      </section>
+      <section class="the-bo-me">
+        <h2>Ảnh của bé</h2>
+        <p class="mo-ta bang-anh-chu">Ảnh chỉ lưu trên máy này, không tải lên mạng.</p>
+        <div class="hang-nut-bo-me">
+          <button class="nut-chinh nut-co-chu nut-nho" id="nut-chon-anh">Chọn ảnh</button>
+          <button class="nut-phu" id="nut-xoa-anh">Dùng ảnh mặc định</button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Hết giờ chơi hôm nay -->
+  <div id="man-hinh-het-gio" class="man-hinh man-het-gio an">
+    <div class="het-gio-giua">
+      <div class="rex-ngu" id="rex-ngu" aria-hidden="true"></div>
+      <h1 class="het-gio-tieu-de">Hôm nay chơi đủ rồi!</h1>
+      <p class="het-gio-chu">Ted giỏi lắm. Rex đi ngủ đây, mai mình chơi tiếp nhé!</p>
+      <button class="nut-tron nut-to" id="nut-het-gio-ve" aria-label="Về màn mở đầu" data-icon="nha"></button>
     </div>
   </div>
 

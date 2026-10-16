@@ -10,6 +10,11 @@ import { rex, rexMat, tedMat, tedToanThan, xeTed, hinhDo, sao, daNangLuong, ruon
 import { docAnh, luuAnhTuFile, xoaAnh } from './anh.js';
 import { DO, O_DO, SAO_MOT_RUONG, doTiepTheo, soRuongCho } from './items.js';
 import { sticker } from './stickers.js';
+import {
+  LUA_CHON_PHUT, caiDat, datPhutMoiNgay, congGiayChoi, choChoiThem, phutDaChoiHomNay, phutConLai, hetGio,
+  TEN_LOAI, ghiCau, docThongKe, xoaThongKe,
+  TEN_KIEU_DE, danhSachDe, themDe, xoaDe, xoaHetDe, kiemTraDe, moTaDe, taoCauTuDe, deNgauNhien,
+} from './bome.js';
 import { taoCau as taoCauDem } from '../games/dem.js';
 import { taoCau as taoCauTimSo } from '../games/timso.js';
 import { taoCau as taoCauSoSanh } from '../games/sosanh.js';
@@ -22,7 +27,7 @@ const LOI_KHEN = ['Giỏi quá, Ted ơi!', 'Tuyệt lắm!', 'Ted làm đúng r�
 const SO_VUNG = 5;
 
 const $ = (id) => document.getElementById(id);
-const MAN_HINH = ['mo-dau', 'ban-do', 'choi', 'ket-qua', 'ruong', 'tu-do', 'da', 'album'];
+const MAN_HINH = ['mo-dau', 'ban-do', 'choi', 'ket-qua', 'ruong', 'tu-do', 'da', 'album', 'bo-me', 'het-gio'];
 const manHinh = Object.fromEntries(MAN_HINH.map((t) => [t, $(`man-hinh-${t}`)]));
 const khungBanDo = $('khung-ban-do');
 const khungCau = $('khung-cau');
@@ -90,6 +95,9 @@ let mauKhungLong = MAU_KHUNG_LONG[0];
 // Ted ngồi im 15 giây thì Rex đọc lại đề (tối đa 2 lần mỗi câu).
 let henGioNhacDe = null;
 let soLanNhacDe = 0;
+// Thống kê cho bố mẹ: số lần sai của câu đang làm và có cần Rex làm mẫu không.
+let soLanSaiCauTong = 0;
+let lamMauCau = false;
 let controllerHienTai = null;
 let henGio = null;
 let hangCho = []; // các màn phần thưởng chờ hiện sau khi xong màn
@@ -104,7 +112,7 @@ function hienManHinh(ten) {
   clearTimeout(henGioNhacDe);
   Object.values(manHinh).forEach((m) => m.classList.add('an'));
   manHinh[ten].classList.remove('an');
-  chonBai(['mo-dau', 'ban-do', 'tu-do', 'album'].includes(ten) ? 'ban-do' : 'choi');
+  chonBai(['mo-dau', 'ban-do', 'tu-do', 'album', 'bo-me', 'het-gio'].includes(ten) ? 'ban-do' : 'choi');
 }
 
 function coRuong() {
@@ -208,9 +216,13 @@ function veTienDo() {
     .join('');
 }
 
-function batDauMan(vung, soMan) {
+function batDauMan(vung, soMan, levelRieng = null) {
+  if (hetGio()) {
+    hienHetGio();
+    return;
+  }
   vungDangChoi = vung;
-  manHienTai = levelsCua(vung)[soMan - 1];
+  manHienTai = levelRieng || levelsCua(vung)[soMan - 1];
   cauIndex = 0;
   tongSoLanSaiMan = 0;
   soLanLamMauMan = 0;
@@ -240,6 +252,8 @@ function batDauCau() {
     return;
   }
   soLanSaiCau = 0;
+  soLanSaiCauTong = 0;
+  lamMauCau = false;
   const cauData = manHienTai.cau[cauIndex];
   cauHienTai = cauData;
   khungCau.innerHTML = '';
@@ -278,6 +292,7 @@ manHinh.choi.addEventListener('pointerdown', () => {
 
 function xuLyDung(loiKhen) {
   clearTimeout(henGioNhacDe);
+  if (cauHienTai) ghiCau(cauHienTai, soLanSaiCauTong, lamMauCau);
   phatDung();
   rexVui();
   const loi = typeof loiKhen === 'string' ? loiKhen : LOI_KHEN[Math.floor(Math.random() * LOI_KHEN.length)];
@@ -290,6 +305,7 @@ function xuLyDung(loiKhen) {
 
 function xuLySai(loiNhac) {
   soLanSaiCau++;
+  soLanSaiCauTong++;
   tongSoLanSaiMan++;
   phatSai();
   if (soLanSaiCau === 1) {
@@ -302,6 +318,7 @@ function xuLySai(loiNhac) {
   } else {
     rexNoi('Để Rex làm mẫu nhé!');
     soLanLamMauMan++;
+    lamMauCau = true;
     hienLaiDeSau(3000);
     if (controllerHienTai && controllerHienTai.lamMau) {
       controllerHienTai.lamMau(() => {
@@ -336,6 +353,23 @@ function veThanhRuong(prefix) {
 
 function ketThucMan() {
   const soSao = tinhSao(soLanLamMauMan);
+  const laDeBo = !!manHienTai.deCuaBo;
+  // Đề của bố mẹ: không tính sao vào tiến độ, không có sticker hay rương.
+  document.querySelector('.hang-thuong').hidden = laDeBo;
+  if (laDeBo) {
+    hangCho = [];
+    const ketQuaSao = $('ket-qua-sao');
+    ketQuaSao.innerHTML = [0, 1, 2]
+      .map((i) => `<span class="sao-to sao-${i}${i < soSao ? ' co' : ''}">${sao(i < soSao, '#FFFFFF')}</span>`)
+      .join('');
+    ketQuaSao.setAttribute('aria-label', `${soSao} trên 3 sao`);
+    $('ket-qua-tieu-de').textContent = 'Xong đề của bố mẹ!';
+    $('the-ngoai-doi').hidden = true;
+    phaoGiay($('phao-giay'));
+    hienManHinh('ket-qua');
+    noi('Ted làm xong đề của bố mẹ rồi! Kể cho bố mẹ nghe nhé!');
+    return;
+  }
   const soMan = levelsCua(vungDangChoi).length;
   const laManCuoi = manHienTai.man === soMan;
   storage.luuMan(vungDangChoi, manHienTai.man, soSao);
@@ -364,6 +398,15 @@ function ketThucMan() {
 }
 
 function tiepTheo() {
+  if (manHienTai && manHienTai.deCuaBo) {
+    if (hetGio()) hienHetGio();
+    else veMoDau();
+    return;
+  }
+  if (hetGio()) {
+    hienHetGio();
+    return;
+  }
   const viec = hangCho.shift();
   if (viec === 'da') hienDaNangLuong();
   else if (coRuong()) hienRuong();
@@ -372,7 +415,10 @@ function tiepTheo() {
 
 $('nut-ve-ban-do').addEventListener('click', veBanDo);
 $('nut-tiep-tuc').addEventListener('click', tiepTheo);
-$('nut-choi-lai').addEventListener('click', () => batDauMan(vungDangChoi, manHienTai.man));
+$('nut-choi-lai').addEventListener('click', () => {
+  if (manHienTai.deCuaBo) batDauDeBo();
+  else batDauMan(vungDangChoi, manHienTai.man);
+});
 // Chạm vào bất kỳ đâu trên bong bóng Rex (mặt Rex, chữ, nút loa) đều nghe lại đề.
 document.querySelector('.bong-rex').addEventListener('click', docLaiDe);
 
@@ -560,9 +606,56 @@ function veLogo() {
 }
 $('rex-mo-dau').innerHTML = rex({ cuoiTo: true, nhay: true });
 $('nut-bat-dau').addEventListener('click', () => {
+  if (hetGio()) {
+    hienHetGio();
+    return;
+  }
   noi('Chào Ted! Mình cùng đi phiêu lưu nào!');
   veBanDo();
 });
+$('nut-de-bo').addEventListener('click', batDauDeBo);
+
+function veMoDau() {
+  veLogo();
+  capNhatNutDeBo();
+  hienManHinh('mo-dau');
+}
+
+function capNhatNutDeBo() {
+  $('nut-de-bo').hidden = danhSachDe().length === 0;
+}
+
+// Đề bố mẹ tự ra: chơi như một màn, khủng long màu ngẫu nhiên.
+function batDauDeBo() {
+  const ds = danhSachDe();
+  if (!ds.length) return;
+  const level = {
+    man: 0,
+    deCuaBo: true,
+    tieuDe: 'Đề của bố mẹ',
+    cauChuyen: 'Bố mẹ ra đề cho Ted nè!',
+    cau: ds.map(taoCauTuDe),
+  };
+  batDauMan(1, 1 + Math.floor(Math.random() * MAU_KHUNG_LONG.length), level);
+}
+
+// ---------- Hết giờ chơi ----------
+$('rex-ngu').innerHTML = `${rex()}<span class="zzz">Z<i>z</i><b>z</b></span>`;
+function hienHetGio() {
+  hienManHinh('het-gio');
+  noi('Hôm nay chơi đủ rồi! Ted giỏi lắm. Rex đi ngủ đây, mai mình chơi tiếp nhé!');
+}
+$('nut-het-gio-ve').addEventListener('click', veMoDau);
+
+// Đếm thời gian chơi: chỉ tính khi máy đang mở game và bé không ở màn mở đầu hay góc bố mẹ.
+setInterval(() => {
+  if (document.visibilityState !== 'visible') return;
+  const dangO = MAN_HINH.find((t) => !manHinh[t].classList.contains('an'));
+  if (['mo-dau', 'bo-me', 'het-gio'].includes(dangO)) return;
+  congGiayChoi(5);
+  // Hết giờ khi đang ở bản đồ, tủ đồ, album: dừng luôn. Đang chơi dở thì để xong màn.
+  if (hetGio() && ['ban-do', 'tu-do', 'album'].includes(dangO)) hienHetGio();
+}, 5000);
 
 // Nút ảnh dành cho bố mẹ: phải giữ 2 giây mới mở, để bé không bấm nhầm.
 let henGioGiu = null;
@@ -571,7 +664,7 @@ nutAnh.addEventListener('pointerdown', () => {
   nutAnh.classList.add('dang-giu');
   henGioGiu = setTimeout(() => {
     nutAnh.classList.remove('dang-giu');
-    $('bang-anh').hidden = false;
+    moGocBoMe();
   }, 2000);
 });
 ['pointerup', 'pointerleave', 'pointercancel'].forEach((ev) => nutAnh.addEventListener(ev, () => {
@@ -586,19 +679,110 @@ $('chon-anh').addEventListener('change', async (e) => {
   try {
     await luuAnhTuFile(file);
   } catch (err) {
-    $('bang-anh').querySelector('.bang-anh-chu').textContent = 'Ảnh lớn quá hoặc máy không lưu được, thử ảnh khác nhé.';
+    document.querySelector('.bang-anh-chu').textContent = 'Ảnh lớn quá hoặc máy không lưu được, thử ảnh khác nhé.';
     return;
   }
-  $('bang-anh').hidden = true;
   veLogo();
 });
 $('nut-xoa-anh').addEventListener('click', () => {
   xoaAnh();
-  $('bang-anh').hidden = true;
   veLogo();
 });
-$('nut-dong-anh').addEventListener('click', () => {
-  $('bang-anh').hidden = true;
+
+// ---------- Góc bố mẹ ----------
+function moGocBoMe() {
+  veGocBoMe();
+  hienManHinh('bo-me');
+}
+$('nut-bo-me-dong').addEventListener('click', veMoDau);
+
+const coDau = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+function veGocBoMe() {
+  // Thời gian chơi
+  const { phutMoiNgay } = caiDat();
+  $('chon-phut').innerHTML = LUA_CHON_PHUT.map((p) => `
+    <button type="button" role="radio" class="nut-chon${p === phutMoiNgay ? ' dang-chon' : ''}" aria-checked="${p === phutMoiNgay}" data-phut="${p}">
+      ${p ? `${p} phút` : 'Không giới hạn'}
+    </button>`).join('');
+  const conLai = phutConLai();
+  $('bo-me-thoi-gian').textContent = `Hôm nay Ted đã chơi ${phutDaChoiHomNay()} phút.`
+    + (conLai === null ? '' : conLai > 0 ? ` Còn ${conLai} phút.` : ' Đã hết giờ hôm nay.')
+    + ' Hết giờ khi đang chơi dở thì Ted được chơi nốt màn đó.';
+  $('nut-cho-them').hidden = !phutMoiNgay;
+
+  // Thống kê
+  const tk = docThongKe();
+  const hang = Object.keys(TEN_LOAI).filter((k) => tk.loai[k]).map((k) => {
+    const l = tk.loai[k];
+    const tiLe = Math.round((l.dungNgay / l.cau) * 100);
+    const yeu = l.cau >= 3 && tiLe < 60;
+    return `<tr${yeu ? ' class="yeu"' : ''}><td>${TEN_LOAI[k]}${yeu ? ' <span class="nhan-on">Nên ôn</span>' : ''}</td><td>${l.cau}</td><td>${tiLe}%</td><td>${l.lamMau}</td></tr>`;
+  }).join('');
+  $('bang-thong-ke').innerHTML = hang
+    ? `<table class="bang-tk"><thead><tr><th>Kiểu bài</th><th>Số câu</th><th>Đúng ngay</th><th>Rex làm mẫu</th></tr></thead><tbody>${hang}</tbody></table>`
+      + (tk.vuong.length ? `<h3>Câu Ted vướng gần đây</h3><ul class="ds-vuong">${tk.vuong.map((v) => `<li>${coDau(v.hoi)} <span>sai ${v.sai} lần${v.lamMau ? ', Rex làm mẫu' : ''}</span></li>`).join('')}</ul>` : '')
+    : '<p class="mo-ta">Ted chưa chơi câu nào từ khi có thống kê.</p>';
+
+  // Đề của bố mẹ
+  const kieu = $('de-kieu');
+  if (!kieu.options.length) kieu.innerHTML = Object.entries(TEN_KIEU_DE).map(([k, t]) => `<option value="${k}">${t}</option>`).join('');
+  capNhatOThem();
+  const ds = danhSachDe();
+  $('ds-de').innerHTML = ds.length
+    ? ds.map((d, i) => `<li><span>${coDau(moTaDe(d))}</span><button type="button" class="nut-xoa-de" data-i="${i}" aria-label="Xoá câu ${i + 1}">Xoá</button></li>`).join('')
+    : '<li class="trong">Chưa có đề nào.</li>';
+  $('nut-xoa-het-de').hidden = !ds.length;
+}
+
+function capNhatOThem() {
+  const laDem = $('de-kieu').value === 'dem';
+  $('de-b').hidden = laDem;
+  $('de-a').placeholder = laDem ? 'số lá' : 'a';
+}
+
+$('chon-phut').addEventListener('click', (e) => {
+  const nut = e.target.closest('[data-phut]');
+  if (!nut) return;
+  datPhutMoiNgay(Number(nut.dataset.phut));
+  veGocBoMe();
+});
+$('nut-cho-them').addEventListener('click', () => {
+  choChoiThem(10);
+  veGocBoMe();
+});
+$('nut-xoa-thong-ke').addEventListener('click', () => {
+  xoaThongKe();
+  veGocBoMe();
+});
+$('de-kieu').addEventListener('change', capNhatOThem);
+$('form-de').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const k = $('de-kieu').value;
+  const a = $('de-a').value === '' ? NaN : Number($('de-a').value);
+  const b = $('de-b').value === '' ? NaN : Number($('de-b').value);
+  const de = k === 'dem' ? { k, n: a } : { k, a, b };
+  const loi = kiemTraDe(de);
+  $('loi-de').textContent = loi || '';
+  if (loi) return;
+  themDe(de);
+  $('de-a').value = '';
+  $('de-b').value = '';
+  veGocBoMe();
+});
+$('ds-de').addEventListener('click', (e) => {
+  const nut = e.target.closest('.nut-xoa-de');
+  if (!nut) return;
+  xoaDe(Number(nut.dataset.i));
+  veGocBoMe();
+});
+$('nut-de-ngau-nhien').addEventListener('click', () => {
+  deNgauNhien().forEach(themDe);
+  veGocBoMe();
+});
+$('nut-xoa-het-de').addEventListener('click', () => {
+  xoaHetDe();
+  veGocBoMe();
 });
 
 // ---------- Báo bố mẹ khi máy không có giọng tiếng Việt ----------
@@ -642,5 +826,4 @@ if (CHE_DO_THU) {
 }
 
 // ---------- Bắt đầu ----------
-veLogo();
-hienManHinh('mo-dau');
+veMoDau();

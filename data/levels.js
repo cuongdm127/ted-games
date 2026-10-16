@@ -15,24 +15,24 @@
 // ngoaiDoi (mỗi màn): việc nhỏ Ted làm cùng bố mẹ ngoài đời, hiện ở màn xong màn.
 // hoi: chữ trong bong bóng của Rex; doc (tuỳ chọn): câu Rex đọc thành tiếng.
 
-const dem = (soLuong, soBo, soLe, soMoiNhu = 0) => ({
+export const dem = (soLuong, soBo, soLe, soMoiNhu = 0) => ({
   kieu: 'dem', soLuong, soBo, soLe, soMoiNhu, layout: 'rai-rac',
   hoi: `Cho khủng long ăn đúng ${soLuong} lá nhé!`,
 });
 
-const timSo = (soDung, soLuaChon) => ({
+export const timSo = (soDung, soLuaChon) => ({
   kieu: 'timso', soDung, soLuaChon,
   hoi: `Chạm vào quả trứng số ${soDung} nhé!`,
 });
 
-const cong = (a, b, soLuaChon) => ({
+export const cong = (a, b, soLuaChon) => ({
   kieu: 'timso', soDung: a + b, soLuaChon, phepTinh: `${a} + ${b}`,
   hoi: `${a} + ${b} bằng mấy?`,
   doc: `${a} cộng ${b} bằng mấy?`,
 });
 
 // Phép cộng có chấm trong khung 10 ô để Ted đếm được.
-const congHinh = (a, b, soLuaChon) => ({ ...cong(a, b, soLuaChon), hinh: true });
+export const congHinh = (a, b, soLuaChon) => ({ ...cong(a, b, soLuaChon), hinh: true });
 
 // Gói lá lẻ thành bó 10: soBo bó phải gói, soLa lá có trên bãi.
 const goiBo = (soBo, soLa) => ({
@@ -41,13 +41,13 @@ const goiBo = (soBo, soLa) => ({
   doc: soBo === 1 ? 'Ted đặt từng lá vào khung. Đủ 10 lá là gói được 1 bó!' : `Gói ${soBo} bó lá nhé! Mỗi bó 10 lá.`,
 });
 
-const soSanh = (trai, phai, chon = 'lon') => ({
+export const soSanh = (trai, phai, chon = 'lon') => ({
   kieu: 'sosanh', trai, phai, chon,
   hoi: `Bãi nào có ${chon === 'lon' ? 'nhiều' : 'ít'} xe hơn: ${trai} hay ${phai}?`,
 });
 
 // Chọn dấu <, =, > đặt giữa hai bãi xe.
-const chonDau = (trai, phai) => ({
+export const chonDau = (trai, phai) => ({
   kieu: 'sosanh', trai, phai, chon: 'dau',
   hoi: `Chọn dấu đúng: ${trai} ? ${phai}`,
   doc: `${trai} với ${phai}. Ted chọn dấu nào nhỉ?`,
